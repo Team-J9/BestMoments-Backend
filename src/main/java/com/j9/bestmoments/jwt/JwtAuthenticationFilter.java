@@ -1,4 +1,4 @@
-package com.j9.bestmoments.auth.jwt;
+package com.j9.bestmoments.jwt;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

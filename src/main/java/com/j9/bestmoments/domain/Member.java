@@ -1,4 +1,4 @@
-package com.j9.bestmoments.member;
+package com.j9.bestmoments.domain;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

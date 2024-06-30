@@ -1,6 +1,6 @@
-package com.j9.bestmoments.auth.jwt;
+package com.j9.bestmoments.dto.response;
 
-public record JwtToken(
+public record JwtTokenDto(
         String grantType,
         String accessToken,
         String refreshToken

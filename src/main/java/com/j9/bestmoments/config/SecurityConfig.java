@@ -1,7 +1,7 @@
 package com.j9.bestmoments.config;
 
-import com.j9.bestmoments.auth.jwt.JwtAuthenticationFilter;
-import com.j9.bestmoments.auth.jwt.JwtTokenProvider;
+import com.j9.bestmoments.jwt.JwtAuthenticationFilter;
+import com.j9.bestmoments.jwt.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;

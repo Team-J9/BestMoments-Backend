@@ -1,6 +1,7 @@
-package com.j9.bestmoments.auth.jwt;
+package com.j9.bestmoments.jwt;
 
-import com.j9.bestmoments.member.Member;
+import com.j9.bestmoments.dto.response.JwtTokenDto;
+import com.j9.bestmoments.domain.Member;
 import com.sun.security.auth.UserPrincipal;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -38,7 +39,7 @@ public class JwtTokenProvider {
         this.key = Keys.hmacShaKeyFor(keyBytes);
     }
 
-    public JwtToken generateToken(Member member) {
+    public JwtTokenDto generateToken(Member member) {
 
         Date now = new Date();
         Date accessTokenExpiresIn = new Date(now.getTime() + accessTokenExpirationMs);
@@ -61,7 +62,7 @@ public class JwtTokenProvider {
                 .signWith(key, SignatureAlgorithm.HS256)
                 .compact();
 
-        return new JwtToken("Bearer", accessToken, refreshToken);
+        return new JwtTokenDto("Bearer", accessToken, refreshToken);
     }
 
     // 토큰을 복호화하여 인증 정보 추출

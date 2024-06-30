@@ -1,4 +1,4 @@
-package com.j9.bestmoments.auth.oauth.dto.request;
+package com.j9.bestmoments.dto.response;
 
 import lombok.Builder;
 

@@ -1,12 +1,12 @@
-package com.j9.bestmoments.auth;
+package com.j9.bestmoments.controller;
 
-import com.j9.bestmoments.auth.jwt.JwtToken;
-import com.j9.bestmoments.auth.jwt.JwtTokenProvider;
-import com.j9.bestmoments.auth.oauth.dto.request.OAuthUserInfoDto;
-import com.j9.bestmoments.auth.oauth.service.GoogleAuthService;
-import com.j9.bestmoments.auth.oauth.service.OAuthService;
-import com.j9.bestmoments.member.Member;
-import com.j9.bestmoments.member.MemberService;
+import com.j9.bestmoments.dto.response.JwtTokenDto;
+import com.j9.bestmoments.jwt.JwtTokenProvider;
+import com.j9.bestmoments.dto.response.OAuthUserInfoDto;
+import com.j9.bestmoments.service.GoogleAuthService;
+import com.j9.bestmoments.service.OAuthService;
+import com.j9.bestmoments.domain.Member;
+import com.j9.bestmoments.service.MemberService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -30,7 +30,7 @@ public class AuthController {
 
     @GetMapping("/login/{oAuthProvider}")
     @Operation(summary = "OAuth 인증코드로 로그인/회원가입", description = "oAuthProvider: google")
-    public ResponseEntity<JwtToken> login(@PathVariable String oAuthProvider, @RequestParam String code) {
+    public ResponseEntity<JwtTokenDto> login(@PathVariable String oAuthProvider, @RequestParam String code) {
         OAuthService oAuthService = switch (oAuthProvider) {
             case "google" -> googleAuthService;
             default -> throw new OAuth2AuthenticationException("존재하지 않는 OAuth 인증 방식입니다.");
@@ -38,7 +38,7 @@ public class AuthController {
         OAuthUserInfoDto oAuthUserInfo = oAuthService.getUserInfo(code);
         Member member = memberService.findOrSaveByOAuthInfo(oAuthUserInfo);
 
-        JwtToken jwtToken = jwtTokenProvider.generateToken(member);
+        JwtTokenDto jwtToken = jwtTokenProvider.generateToken(member);
         return ResponseEntity.ok(jwtToken);
     }
 

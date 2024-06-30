@@ -1,4 +1,4 @@
-package com.j9.bestmoments.member;
+package com.j9.bestmoments.domain;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

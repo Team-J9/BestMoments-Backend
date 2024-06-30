@@ -1,7 +1,7 @@
-package com.j9.bestmoments.auth.oauth.service;
+package com.j9.bestmoments.service;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.j9.bestmoments.auth.oauth.dto.request.OAuthUserInfoDto;
+import com.j9.bestmoments.dto.response.OAuthUserInfoDto;
 import java.util.Collections;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Value;

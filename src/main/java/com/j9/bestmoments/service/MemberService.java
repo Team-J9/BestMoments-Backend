@@ -1,6 +1,9 @@
-package com.j9.bestmoments.member;
+package com.j9.bestmoments.service;
 
-import com.j9.bestmoments.auth.oauth.dto.request.OAuthUserInfoDto;
+import com.j9.bestmoments.dto.response.OAuthUserInfoDto;
+import com.j9.bestmoments.domain.MemberRole;
+import com.j9.bestmoments.domain.Member;
+import com.j9.bestmoments.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
