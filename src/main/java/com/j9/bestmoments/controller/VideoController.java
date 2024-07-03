@@ -10,6 +10,7 @@ import com.j9.bestmoments.dto.response.VideoPreviewDto;
 import com.j9.bestmoments.service.MemberService;
 import com.j9.bestmoments.service.VideoService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import java.util.List;
 import java.util.UUID;
@@ -33,6 +34,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/videos")
+@Tag(name = "Video", description = "동영상 관련 API")
 public class VideoController {
 
     private final VideoService videoService;
