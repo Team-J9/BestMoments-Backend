@@ -5,6 +5,8 @@ import com.j9.bestmoments.domain.Video;
 import com.j9.bestmoments.dto.request.VideoCreateDto;
 import com.j9.bestmoments.dto.response.VideoFindDto;
 import com.j9.bestmoments.repository.VideoRepository;
+import jakarta.persistence.EntityNotFoundException;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,6 +30,11 @@ public class VideoService {
                 .build();
         videoRepository.save(video);
         return video;
+    }
+
+    public Video findById(UUID id) {
+        return videoRepository.findById(id)
+                .orElseThrow(EntityNotFoundException::new);
     }
 
 

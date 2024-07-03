@@ -8,12 +8,15 @@ import com.j9.bestmoments.service.MemberService;
 import com.j9.bestmoments.service.VideoService;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -26,7 +29,7 @@ public class VideoController {
     private final VideoService videoService;
     private final MemberService memberService;
 
-    @Operation(summary = "비디오 업로드")
+    @Operation(summary = "동영상 업로드")
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<VideoFindDto> upload(@ModelAttribute @Valid VideoCreateDto createDto) {
         String id = SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString();
@@ -35,6 +38,13 @@ public class VideoController {
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(VideoFindDto.of(video));
+    }
+
+    @Operation(summary = "동영상 열람")
+    @GetMapping("/{videoId}")
+    public ResponseEntity<VideoFindDto> findById(@PathVariable UUID videoId) {
+        Video video = videoService.findById(videoId);
+        return ResponseEntity.ok(VideoFindDto.of(video));
     }
 
 }
