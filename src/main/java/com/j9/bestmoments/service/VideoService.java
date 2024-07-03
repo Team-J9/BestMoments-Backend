@@ -2,12 +2,15 @@ package com.j9.bestmoments.service;
 
 import com.j9.bestmoments.domain.Member;
 import com.j9.bestmoments.domain.Video;
+import com.j9.bestmoments.domain.VideoStatus;
 import com.j9.bestmoments.dto.request.VideoCreateDto;
-import com.j9.bestmoments.dto.response.VideoFindDto;
 import com.j9.bestmoments.repository.VideoRepository;
 import jakarta.persistence.EntityNotFoundException;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -35,6 +38,20 @@ public class VideoService {
     public Video findById(UUID id) {
         return videoRepository.findById(id)
                 .orElseThrow(EntityNotFoundException::new);
+    }
+
+    public Page<Video> findAllByUploaderId(UUID currentMemberId, UUID memberId, Pageable pageable) {
+        if (currentMemberId.equals(memberId)) {
+            return videoRepository.findAllByUploaderIdAndDeletedAtIsNull(
+                    memberId,
+                    PageRequest.of(pageable.getPageNumber(), pageable.getPageSize())
+            );
+        }
+        return videoRepository.findAllByUploaderIdAndVideoStatusAndDeletedAtIsNull(
+                memberId,
+                VideoStatus.PUBLIC,
+                PageRequest.of(pageable.getPageNumber(), pageable.getPageSize())
+        );
     }
 
 
