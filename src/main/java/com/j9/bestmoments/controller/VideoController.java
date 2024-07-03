@@ -55,15 +55,20 @@ public class VideoController {
     @PatchMapping("/{videoId}")
     public ResponseEntity<VideoFindDto> update(@PathVariable UUID videoId, @RequestBody VideoUpdateDto updateDto) {
         UUID memberId = UUID.fromString(SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString());
+        Member member = memberService.findById(memberId);
         Video video = videoService.findById(videoId);
-        videoService.update(video, memberId, updateDto);
+        videoService.checkCanRead(member, video);
+        videoService.update(video, updateDto);
         return ResponseEntity.ok(VideoFindDto.of(video));
     }
 
     @Operation(summary = "동영상 열람")
     @GetMapping("/{videoId}")
-    public ResponseEntity<VideoFindDto> findById(@PathVariable UUID videoId) {
+    public ResponseEntity<VideoFindDto> view(@PathVariable UUID videoId) {
+        UUID memberId = UUID.fromString(SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString());
+        Member member = memberService.findById(memberId);
         Video video = videoService.findById(videoId);
+        videoService.checkCanRead(member, video);
         return ResponseEntity.ok(VideoFindDto.of(video));
     }
 
@@ -71,8 +76,10 @@ public class VideoController {
     @DeleteMapping("/{videoId}")
     public ResponseEntity<VideoFindDto> softDelete(@PathVariable UUID videoId) {
         UUID memberId = UUID.fromString(SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString());
+        Member member = memberService.findById(memberId);
         Video video = videoService.findById(videoId);
-        videoService.softDelete(video, memberId);
+        videoService.checkCanWrite(member, video);
+        videoService.softDelete(video);
         return ResponseEntity.ok(VideoFindDto.of(video));
     }
 
@@ -80,8 +87,10 @@ public class VideoController {
     @PostMapping("/{videoId}")
     public ResponseEntity<VideoFindDto> restore(@PathVariable UUID videoId) {
         UUID memberId = UUID.fromString(SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString());
+        Member member = memberService.findById(memberId);
         Video video = videoService.findById(videoId);
-        videoService.restore(video, memberId);
+        videoService.checkCanWrite(member, video);
+        videoService.restore(video);
         return ResponseEntity.ok(VideoFindDto.of(video));
     }
 

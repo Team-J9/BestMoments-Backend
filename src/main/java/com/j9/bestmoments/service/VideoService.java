@@ -1,17 +1,20 @@
 package com.j9.bestmoments.service;
 
 import com.j9.bestmoments.domain.Member;
+import com.j9.bestmoments.domain.MemberRole;
 import com.j9.bestmoments.domain.Video;
 import com.j9.bestmoments.domain.VideoStatus;
 import com.j9.bestmoments.dto.request.VideoCreateDto;
 import com.j9.bestmoments.dto.request.VideoUpdateDto;
 import com.j9.bestmoments.repository.VideoRepository;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.security.auth.message.AuthException;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -42,34 +45,29 @@ public class VideoService {
     }
 
     @Transactional
-    public Video update(Video video, UUID memberId, VideoUpdateDto updateDto) {
-        if (video.getUploader().getId().equals(memberId)) {
-            video.setTitle(updateDto.title());
-            video.setDescription(updateDto.description());
-            video.setVideoStatus(updateDto.videoStatus());
-            videoRepository.save(video);
-        }
+    public Video update(Video video, VideoUpdateDto updateDto) {
+        video.setTitle(updateDto.title());
+        video.setDescription(updateDto.description());
+        video.setVideoStatus(updateDto.videoStatus());
+        videoRepository.save(video);
         return video;
     }
 
     @Transactional
-    public Video softDelete(Video video, UUID memberId) {
-        if (video.getUploader().getId().equals(memberId)) {
-            video.softDelete();
-            videoRepository.save(video);
-        }
+    public Video softDelete(Video video) {
+        video.softDelete();
+        videoRepository.save(video);
         return video;
     }
 
     @Transactional
-    public Video restore(Video video, UUID memberId) {
-        if (video.getUploader().getId().equals(memberId)) {
-            video.restore();
-            videoRepository.save(video);
-        }
+    public Video restore(Video video) {
+        video.restore();
+        videoRepository.save(video);
         return video;
     }
 
+    // 조회할 수 있는 영상만 조회
     public Page<Video> findAllByUploaderId(UUID currentMemberId, UUID memberId, Pageable pageable) {
         if (currentMemberId.equals(memberId)) {
             return videoRepository.findAllByUploaderIdAndDeletedAtIsNull(
@@ -89,6 +87,20 @@ public class VideoService {
                 memberId,
                 PageRequest.of(pageable.getPageNumber(), pageable.getPageSize())
         );
+    }
+
+    public void checkCanRead(Member member, Video video) {
+        if (video.canBeReadBy(member)) {
+            return;
+        }
+        throw new AccessDeniedException("권한 없음");
+    }
+
+    public void checkCanWrite(Member member, Video video) {
+        if (video.canBeWrittenBy(member)) {
+            return;
+        }
+        throw new AccessDeniedException("권한 없음");
     }
 
 }

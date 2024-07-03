@@ -21,6 +21,11 @@ public class MemberService {
                 .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 유저입니다."));
     }
 
+    public Member findById(UUID id) {
+        return memberRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 유저입니다."));
+    }
+
     @Transactional
     public Member findOrSaveByOAuthInfo(OAuthUserInfoDto oAuth2UserInfo) {
         Member member = memberRepository.findByOauthProviderAndOauthId(oAuth2UserInfo.provider(), oAuth2UserInfo.id())
