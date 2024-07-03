@@ -19,6 +19,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -49,6 +50,15 @@ public class VideoController {
     @GetMapping("/{videoId}")
     public ResponseEntity<VideoFindDto> findById(@PathVariable UUID videoId) {
         Video video = videoService.findById(videoId);
+        return ResponseEntity.ok(VideoFindDto.of(video));
+    }
+
+    @Operation(summary = "동영상 삭제 (휴지통으로 이동)")
+    @DeleteMapping("/{videoId}")
+    public ResponseEntity<VideoFindDto> softDelete(@PathVariable UUID videoId) {
+        UUID memberId = UUID.fromString(SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString());
+        Video video = videoService.findById(videoId);
+        videoService.softDelete(video, memberId);
         return ResponseEntity.ok(VideoFindDto.of(video));
     }
 

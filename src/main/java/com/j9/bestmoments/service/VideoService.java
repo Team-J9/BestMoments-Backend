@@ -40,6 +40,15 @@ public class VideoService {
                 .orElseThrow(EntityNotFoundException::new);
     }
 
+    @Transactional
+    public Video softDelete(Video video, UUID memberId) {
+        if (video.getUploader().getId().equals(memberId)) {
+            video.softDelete();
+            videoRepository.save(video);
+        }
+        return video;
+    }
+
     public Page<Video> findAllByUploaderId(UUID currentMemberId, UUID memberId, Pageable pageable) {
         if (currentMemberId.equals(memberId)) {
             return videoRepository.findAllByUploaderIdAndDeletedAtIsNull(
