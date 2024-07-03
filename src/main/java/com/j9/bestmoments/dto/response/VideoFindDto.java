@@ -12,6 +12,7 @@ public record VideoFindDto(
         String description,
         UUID uploaderId,
         LocalDateTime createdAt,
+        LocalDateTime deletedAt,
         VideoStatus videoStatus
 ) {
 
@@ -23,6 +24,7 @@ public record VideoFindDto(
                 video.getDescription(),
                 video.getUploader().getId(),
                 video.getCreatedAt(),
+                video.getDeletedAt(),
                 video.getVideoStatus()
         );
     }

@@ -84,5 +84,11 @@ public class VideoService {
         );
     }
 
+    public Page<Video> findAllDeletedByUploaderId(UUID memberId, Pageable pageable) {
+        return videoRepository.findAllByUploaderIdAndDeletedAtIsNull(
+                memberId,
+                PageRequest.of(pageable.getPageNumber(), pageable.getPageSize())
+        );
+    }
 
 }

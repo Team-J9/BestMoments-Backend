@@ -83,6 +83,14 @@ public class VideoController {
         return ResponseEntity.ok(VideoFindDto.of(video));
     }
 
+    @Operation(summary = "내 휴지통 조회")
+    @GetMapping("/deleted")
+    public ResponseEntity<Page<VideoPreviewDto>> findDeletedVideos(Pageable pageable) {
+        UUID memberId = UUID.fromString(SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString());
+        Page<Video> videos = videoService.findAllDeletedByUploaderId(memberId, pageable);
+        return ResponseEntity.ok(videos.map(VideoPreviewDto::of));
+    }
+
     @Operation(summary = "사용자의 동영상 목록 조회")
     @GetMapping("/by/{memberId}")
     public ResponseEntity<Page<VideoPreviewDto>> findAllByUploaderId(@PathVariable UUID memberId, Pageable pageable) {
