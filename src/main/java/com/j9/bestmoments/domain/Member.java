@@ -5,12 +5,18 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.UUID;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.BatchSize;
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.GenericGenerator;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -32,6 +38,11 @@ public class Member implements UserDetails {
     private String email;
     private MemberRole role;
     private String profileImageUrl;
+
+    @BatchSize(size = 100)
+    @OneToMany(mappedBy = "uploader")
+    @Cascade(CascadeType.ALL)
+    private List<Video> videos = new ArrayList<>();
 
     @Builder
     private Member(String name, String email, MemberRole role, String profileImageUrl, String oauthProvider, String oauthId) {

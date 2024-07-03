@@ -1,0 +1,30 @@
+package com.j9.bestmoments.dto.response;
+
+import com.j9.bestmoments.domain.Video;
+import com.j9.bestmoments.domain.VideoStatus;
+import java.time.LocalDateTime;
+import java.util.UUID;
+
+public record VideoFindDto(
+        UUID id,
+        String fileUrl,
+        String title,
+        String description,
+        UUID uploaderId,
+        LocalDateTime createdAt,
+        VideoStatus videoStatus
+) {
+
+    public static VideoFindDto of (Video video) {
+        return new VideoFindDto(
+                video.getId(),
+                video.getFileUrl(),
+                video.getTitle(),
+                video.getDescription(),
+                video.getUploader().getId(),
+                video.getCreatedAt(),
+                video.getVideoStatus()
+        );
+    }
+
+}

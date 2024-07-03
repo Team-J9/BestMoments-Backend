@@ -35,11 +35,16 @@ public class GoogleCloudStorageService implements StorageService {
 
     // 다운로드 링크를 반환
     @Override
-    public String uploadFile(MultipartFile file) throws IOException {
+    public String uploadFile(MultipartFile file) {
         String fileName = String.format("%s.%s", UUID.randomUUID(), file.getContentType().split("/")[1]);
         BlobId blobId = BlobId.of(bucketName, fileName);
         BlobInfo blobInfo = BlobInfo.newBuilder(blobId).build();
-        storage.create(blobInfo, file.getInputStream());
+        try {
+            storage.create(blobInfo, file.getInputStream());
+        }
+        catch (Exception e) {
+            throw new RuntimeException("IOException");
+        }
         log.info("blobId = {}", blobId);
         return String.format("https://storage.cloud.google.com/%s/%s", bucketName, fileName);
     }
