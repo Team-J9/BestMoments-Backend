@@ -62,6 +62,15 @@ public class VideoController {
         return ResponseEntity.ok(VideoFindDto.of(video));
     }
 
+    @Operation(summary = "동영상 복구 (휴지통에서 복구)")
+    @PostMapping("/{videoId}")
+    public ResponseEntity<VideoFindDto> restore(@PathVariable UUID videoId) {
+        UUID memberId = UUID.fromString(SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString());
+        Video video = videoService.findById(videoId);
+        videoService.restore(video, memberId);
+        return ResponseEntity.ok(VideoFindDto.of(video));
+    }
+
     @Operation(summary = "사용자의 동영상 목록 조회")
     @GetMapping("/by/{memberId}")
     public ResponseEntity<Page<VideoPreviewDto>> findAllByUploaderId(@PathVariable UUID memberId, Pageable pageable) {

@@ -49,6 +49,15 @@ public class VideoService {
         return video;
     }
 
+    @Transactional
+    public Video restore(Video video, UUID memberId) {
+        if (video.getUploader().getId().equals(memberId)) {
+            video.restore();
+            videoRepository.save(video);
+        }
+        return video;
+    }
+
     public Page<Video> findAllByUploaderId(UUID currentMemberId, UUID memberId, Pageable pageable) {
         if (currentMemberId.equals(memberId)) {
             return videoRepository.findAllByUploaderIdAndDeletedAtIsNull(
