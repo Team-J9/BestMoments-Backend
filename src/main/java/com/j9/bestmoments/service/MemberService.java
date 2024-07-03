@@ -4,6 +4,8 @@ import com.j9.bestmoments.dto.response.OAuthUserInfoDto;
 import com.j9.bestmoments.domain.MemberRole;
 import com.j9.bestmoments.domain.Member;
 import com.j9.bestmoments.repository.MemberRepository;
+import jakarta.persistence.EntityNotFoundException;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -13,6 +15,16 @@ import org.springframework.transaction.annotation.Transactional;
 public class MemberService {
 
     private final MemberRepository memberRepository;
+
+    public Member findById(String id) {
+        return memberRepository.findById(UUID.fromString(id))
+                .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 유저입니다."));
+    }
+
+    public Member findById(UUID id) {
+        return memberRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 유저입니다."));
+    }
 
     @Transactional
     public Member findOrSaveByOAuthInfo(OAuthUserInfoDto oAuth2UserInfo) {
