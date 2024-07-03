@@ -4,6 +4,7 @@ import com.j9.bestmoments.domain.Member;
 import com.j9.bestmoments.domain.Video;
 import com.j9.bestmoments.domain.VideoStatus;
 import com.j9.bestmoments.dto.request.VideoCreateDto;
+import com.j9.bestmoments.dto.request.VideoUpdateDto;
 import com.j9.bestmoments.repository.VideoRepository;
 import jakarta.persistence.EntityNotFoundException;
 import java.util.UUID;
@@ -38,6 +39,17 @@ public class VideoService {
     public Video findById(UUID id) {
         return videoRepository.findById(id)
                 .orElseThrow(EntityNotFoundException::new);
+    }
+
+    @Transactional
+    public Video update(Video video, UUID memberId, VideoUpdateDto updateDto) {
+        if (video.getUploader().getId().equals(memberId)) {
+            video.setTitle(updateDto.title());
+            video.setDescription(updateDto.description());
+            video.setVideoStatus(updateDto.videoStatus());
+            videoRepository.save(video);
+        }
+        return video;
     }
 
     @Transactional
