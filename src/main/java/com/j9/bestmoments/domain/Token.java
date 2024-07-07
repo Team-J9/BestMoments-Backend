@@ -29,8 +29,6 @@ public class Token {
 
     @Builder
     public Token(Member member, String refreshToken, String accessToken) {
-        System.out.println(accessToken);
-        System.out.println(refreshToken);
         this.member = member;
         this.refreshToken = refreshToken;
         this.accessToken = accessToken;
