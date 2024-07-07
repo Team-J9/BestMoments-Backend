@@ -25,17 +25,12 @@ public class Token {
 
     private String refreshToken;
     private String accessToken;
-    private Boolean isExpired = false;
 
     @Builder
     public Token(Member member, String refreshToken, String accessToken) {
         this.member = member;
         this.refreshToken = refreshToken;
         this.accessToken = accessToken;
-    }
-
-    public void expire() {
-        this.isExpired = true;
     }
 
     public void setAccessToken(String accessToken) {
