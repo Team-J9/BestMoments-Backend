@@ -43,12 +43,21 @@ public class MemberController {
     }
 
     @DeleteMapping()
-    @Operation(summary = "회원탈퇴", description = "soft delete")
+    @Operation(summary = "회원 탈퇴", description = "soft delete")
     public ResponseEntity<String> delete() {
         UUID memberId = UUID.fromString(SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString());
         Member member = memberService.findById(memberId);
         memberService.softDelete(member);
         return ResponseEntity.ok("성공적으로 탈퇴하였습니다.");
+    }
+
+    @PatchMapping("/restore")
+    @Operation(summary = "회원 탈퇴 철회")
+    public ResponseEntity<String> restore() {
+        UUID memberId = UUID.fromString(SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString());
+        Member member = memberService.findById(memberId);
+        memberService.restore(member);
+        return ResponseEntity.ok("성공적으로 복구하였습니다.");
     }
 
     @PatchMapping()

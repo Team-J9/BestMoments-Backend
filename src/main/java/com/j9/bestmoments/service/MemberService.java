@@ -65,4 +65,10 @@ public class MemberService {
         memberRepository.save(member);
     }
 
+    @Transactional
+    public void restore(Member member) {
+        member.restore();
+        memberRepository.save(member);
+    }
+
 }
