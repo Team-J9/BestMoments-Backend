@@ -32,9 +32,9 @@ public class MemberController {
     }
 
     @GetMapping("/{memberId}")
-    @Operation(summary = "사용자 상세 정보 조회", description = "사용자 id로 상세 정보 조회")
+    @Operation(summary = "사용자 상세 정보 조회", description = "사용자 id로 상세 정보 조회, 탈퇴한 사용자는 표기되지 않음")
     public ResponseEntity<MemberFindDto> getMemberInfo(@PathVariable String memberId) {
-        Member member = memberService.findById(memberId);
+        Member member = memberService.findByIdAndDeletedAtIsNull(UUID.fromString(memberId));
         return ResponseEntity.ok(MemberFindDto.of(member));
     }
 
