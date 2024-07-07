@@ -60,8 +60,8 @@ public class MemberController {
         return ResponseEntity.ok("성공적으로 복구하였습니다.");
     }
 
-    @PatchMapping()
-    @Operation(summary = "정보 수정", description = "현재 사용자 정보 수정")
+    @PatchMapping("/my-page")
+    @Operation(summary = "현재 사용자 정보 수정")
     public ResponseEntity<MemberFindDto> update(@RequestBody MemberUpdateDto updateDto) {
         UUID memberId = UUID.fromString(SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString());
         Member member = memberService.findById(memberId);
