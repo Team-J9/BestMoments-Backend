@@ -1,5 +1,6 @@
 package com.j9.bestmoments.service;
 
+import com.j9.bestmoments.dto.request.MemberUpdateDto;
 import com.j9.bestmoments.dto.response.OAuthUserInfoDto;
 import com.j9.bestmoments.domain.MemberRole;
 import com.j9.bestmoments.domain.Member;
@@ -18,6 +19,11 @@ public class MemberService {
 
     public Member findById(String id) {
         return memberRepository.findById(UUID.fromString(id))
+                .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 유저입니다."));
+    }
+
+    public Member findByIdAndDeletedAtIsNull(UUID id) {
+        return memberRepository.findByIdAndDeletedAtIsNull(id)
                 .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 유저입니다."));
     }
 
@@ -44,6 +50,25 @@ public class MemberService {
                 .build();
 
         return memberRepository.save(member);
+    }
+
+    @Transactional
+    public Member update(Member member, MemberUpdateDto memberUpdateDto) {
+        member.setName(memberUpdateDto.name());
+        member.setDescription(memberUpdateDto.description());
+        return memberRepository.save(member);
+    }
+
+    @Transactional
+    public void softDelete(Member member) {
+        member.softDelete();
+        memberRepository.save(member);
+    }
+
+    @Transactional
+    public void restore(Member member) {
+        member.restore();
+        memberRepository.save(member);
     }
 
 }
