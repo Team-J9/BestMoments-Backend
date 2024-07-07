@@ -10,6 +10,7 @@ import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -36,6 +37,15 @@ public class MemberController {
     public ResponseEntity<MemberFindDto> getMemberInfo(@PathVariable String memberId) {
         Member member = memberService.findByIdAndDeletedAtIsNull(UUID.fromString(memberId));
         return ResponseEntity.ok(MemberFindDto.of(member));
+    }
+
+    @DeleteMapping()
+    @Operation(summary = "회원탈퇴", description = "soft delete")
+    public ResponseEntity<String> delete() {
+        UUID memberId = UUID.fromString(SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString());
+        Member member = memberService.findById(memberId);
+        memberService.softDelete(member);
+        return ResponseEntity.ok("성공적으로 탈퇴하였습니다.");
     }
 
 }

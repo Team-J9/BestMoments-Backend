@@ -51,4 +51,10 @@ public class MemberService {
         return memberRepository.save(member);
     }
 
+    @Transactional
+    public void softDelete(Member member) {
+        member.softDelete();
+        memberRepository.save(member);
+    }
+
 }
