@@ -40,4 +40,8 @@ public class Token {
         this.isExpired = true;
     }
 
+    public void setAccessToken(String accessToken) {
+        this.accessToken = accessToken;
+    }
+
 }

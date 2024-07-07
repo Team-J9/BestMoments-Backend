@@ -25,8 +25,8 @@ public class TokenService {
         String refreshToken = jwtTokenProvider.generateRefreshToken(member);
         Token token = Token.builder()
                 .member(member)
-                .accessToken(accessToken)
-                .refreshToken(refreshToken)
+                .accessToken("Bearer " + accessToken)
+                .refreshToken("Bearer " + refreshToken)
                 .build();
         tokenRepository.save(token);
         log.error(token.getAccessToken());
@@ -52,6 +52,7 @@ public class TokenService {
     }
 
     public void checkExpired(String token) {
+        log.warn(token);
         Token foundToken = findByAnyToken(token);
         if (foundToken.getIsExpired()) {
             throw new AccessDeniedException("만료된 액세스 토큰입니다.");
@@ -60,9 +61,20 @@ public class TokenService {
 
     @Transactional
     public void expire(String refreshToken) {
+        log.error(refreshToken);
         Token foundToken = findByRefreshToken(refreshToken);
         foundToken.expire();
         tokenRepository.save(foundToken);
+    }
+
+    @Transactional
+    public String refresh(String refreshToken) {
+        log.info(refreshToken);
+        Token foundToken = findByRefreshToken(refreshToken);
+        String accessToken = jwtTokenProvider.generateAccessToken(foundToken.getMember());
+        foundToken.setAccessToken("Bearer " + accessToken);
+        tokenRepository.save(foundToken);
+        return accessToken;
     }
 
 }

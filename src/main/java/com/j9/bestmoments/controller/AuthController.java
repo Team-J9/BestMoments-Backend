@@ -1,5 +1,6 @@
 package com.j9.bestmoments.controller;
 
+import com.j9.bestmoments.domain.Token;
 import com.j9.bestmoments.dto.response.JwtTokenDto;
 import com.j9.bestmoments.dto.response.OAuthUserInfoDto;
 import com.j9.bestmoments.service.GoogleAuthService;
@@ -51,4 +52,11 @@ public class AuthController {
         return ResponseEntity.ok().body("로그아웃에 성공하였습니다.");
     }
 
+    @PatchMapping("/refresh")
+    @Operation(summary = "액세스토큰 재발급", description = "리프래시 토큰을 통해 재발급받습니다.")
+    public ResponseEntity<String> refreshToken(@RequestHeader("Authorization") String refreshToken) {
+        String accessToken = tokenService.refresh(refreshToken);
+        return ResponseEntity.ok().body(accessToken);
+    }
+    
 }

@@ -28,7 +28,7 @@ public class JwtAuthenticationFilter extends GenericFilterBean {
         if (token != null && jwtTokenProvider.validateToken(token)) {
             Authentication authentication = jwtTokenProvider.getAuthentication(token);
             SecurityContextHolder.getContext().setAuthentication(authentication);
-            tokenService.checkExpired(token);
+            tokenService.checkExpired("Bearer " + token);
         }
 
         chain.doFilter(request, response);
