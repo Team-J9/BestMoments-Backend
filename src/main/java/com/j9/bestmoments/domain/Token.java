@@ -1,0 +1,43 @@
+package com.j9.bestmoments.domain;
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToOne;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
+@Entity
+@Getter
+@NoArgsConstructor
+public class Token {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long id;
+
+    @OneToOne
+    @JoinColumn(name = "member_id", referencedColumnName = "id")
+    private Member member;
+
+    private String refreshToken;
+    private String accessToken;
+    private Boolean isExpired = false;
+
+    @Builder
+    public Token(Member member, String refreshToken, String accessToken) {
+        System.out.println(accessToken);
+        System.out.println(refreshToken);
+        this.member = member;
+        this.refreshToken = refreshToken;
+        this.accessToken = accessToken;
+    }
+
+    public void expire() {
+        this.isExpired = true;
+    }
+
+}

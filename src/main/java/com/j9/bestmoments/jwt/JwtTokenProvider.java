@@ -39,30 +39,28 @@ public class JwtTokenProvider {
         this.key = Keys.hmacShaKeyFor(keyBytes);
     }
 
-    public JwtTokenDto generateToken(Member member) {
-
+    public String generateAccessToken(Member member) {
         Date now = new Date();
         Date accessTokenExpiresIn = new Date(now.getTime() + accessTokenExpirationMs);
-        Date refreshTokenExpiresIn = new Date(now.getTime() + refreshTokenExpirationMs);
-
-        // 액세스 토큰 생성
-        String accessToken = Jwts.builder()
+        return Jwts.builder()
                 .claim("id", member.getId())
                 .claim("role", member.getRole())
                 .setIssuedAt(now)
                 .setExpiration(accessTokenExpiresIn)
                 .signWith(key, SignatureAlgorithm.HS256)
                 .compact();
+    }
 
-        // 리프레쉬 토큰 생성
-        String refreshToken = Jwts.builder()
+    public String generateRefreshToken(Member member) {
+        Date now = new Date();
+        Date refreshTokenExpiresIn = new Date(now.getTime() + refreshTokenExpirationMs);
+        return Jwts.builder()
                 .claim("id", member.getId())
+                .claim("role", member.getRole())
                 .setIssuedAt(now)
                 .setExpiration(refreshTokenExpiresIn)
                 .signWith(key, SignatureAlgorithm.HS256)
                 .compact();
-
-        return new JwtTokenDto("Bearer", accessToken, refreshToken);
     }
 
     // 토큰을 복호화하여 인증 정보 추출
