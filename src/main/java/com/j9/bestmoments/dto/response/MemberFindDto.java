@@ -6,7 +6,8 @@ public record MemberFindDto(
         String id,
         String name,
         String email,
-        String profileImageUrl
+        String profileImageUrl,
+        String description
 ) {
 
     public static MemberFindDto of(Member member) {
@@ -14,7 +15,8 @@ public record MemberFindDto(
                 member.getId().toString(),
                 member.getName(),
                 member.getEmail(),
-                member.getProfileImageUrl()
+                member.getProfileImageUrl(),
+                member.getDescription()
         );
     }
 

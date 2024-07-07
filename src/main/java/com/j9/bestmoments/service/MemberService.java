@@ -1,5 +1,6 @@
 package com.j9.bestmoments.service;
 
+import com.j9.bestmoments.dto.request.MemberUpdateDto;
 import com.j9.bestmoments.dto.response.OAuthUserInfoDto;
 import com.j9.bestmoments.domain.MemberRole;
 import com.j9.bestmoments.domain.Member;
@@ -48,6 +49,13 @@ public class MemberService {
                 .role(MemberRole.USER)
                 .build();
 
+        return memberRepository.save(member);
+    }
+
+    @Transactional
+    public Member update(Member member, MemberUpdateDto memberUpdateDto) {
+        member.setName(memberUpdateDto.name());
+        member.setDescription(memberUpdateDto.description());
         return memberRepository.save(member);
     }
 

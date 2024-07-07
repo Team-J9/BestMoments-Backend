@@ -44,6 +44,8 @@ public class Member implements UserDetails {
     private MemberRole role;
     private String profileImageUrl;
 
+    private String description = "";
+
     @CreatedDate
     private LocalDateTime createdAt;
     private LocalDateTime deletedAt;
@@ -69,6 +71,14 @@ public class Member implements UserDetails {
 
     public void restore() {
         this.deletedAt = null;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     @Override

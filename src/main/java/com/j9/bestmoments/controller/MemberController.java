@@ -1,6 +1,7 @@
 package com.j9.bestmoments.controller;
 
 import com.j9.bestmoments.domain.Member;
+import com.j9.bestmoments.dto.request.MemberUpdateDto;
 import com.j9.bestmoments.dto.response.MemberFindDto;
 import com.j9.bestmoments.dto.response.MemberSummaryDto;
 import com.j9.bestmoments.service.MemberService;
@@ -12,7 +13,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -46,6 +49,15 @@ public class MemberController {
         Member member = memberService.findById(memberId);
         memberService.softDelete(member);
         return ResponseEntity.ok("성공적으로 탈퇴하였습니다.");
+    }
+
+    @PatchMapping()
+    @Operation(summary = "정보 수정", description = "현재 사용자 정보 수정")
+    public ResponseEntity<MemberFindDto> update(@RequestBody MemberUpdateDto updateDto) {
+        UUID memberId = UUID.fromString(SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString());
+        Member member = memberService.findById(memberId);
+        memberService.update(member, updateDto);
+        return ResponseEntity.ok(MemberFindDto.of(member));
     }
 
 }
