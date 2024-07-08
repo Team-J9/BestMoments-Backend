@@ -43,7 +43,7 @@ public class JwtTokenProvider {
         Date accessTokenExpiresIn = new Date(now.getTime() + accessTokenExpirationMs);
         return Jwts.builder()
                 .claim("id", member.getId())
-                .claim("role", member.getRole())
+                .claim("role", member.getRole().getValue())
                 .setIssuedAt(now)
                 .setExpiration(accessTokenExpiresIn)
                 .signWith(key, SignatureAlgorithm.HS256)
@@ -55,7 +55,7 @@ public class JwtTokenProvider {
         Date refreshTokenExpiresIn = new Date(now.getTime() + refreshTokenExpirationMs);
         return Jwts.builder()
                 .claim("id", member.getId())
-                .claim("role", member.getRole())
+                .claim("role", member.getRole().getValue())
                 .setIssuedAt(now)
                 .setExpiration(refreshTokenExpiresIn)
                 .signWith(key, SignatureAlgorithm.HS256)
