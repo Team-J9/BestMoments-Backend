@@ -20,11 +20,6 @@ public class MemberService {
 
     private final MemberRepository memberRepository;
 
-    public Member findById(String id) {
-        return memberRepository.findById(UUID.fromString(id))
-                .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 유저입니다."));
-    }
-
     public Page<Member> findAll(Pageable pageable) {
         return memberRepository.findAll(PageRequest.of(
                 pageable.getPageNumber(), pageable.getPageSize()

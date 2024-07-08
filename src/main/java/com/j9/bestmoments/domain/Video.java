@@ -76,12 +76,4 @@ public class Video {
         this.videoStatus = videoStatus;
     }
 
-    public boolean canBeWrittenBy(Member member) {
-        return member.equals(uploader);
-    }
-
-    public boolean canBeReadBy(Member member) {
-        return videoStatus.equals(VideoStatus.PUBLIC) || canBeWrittenBy(member);
-    }
-
 }

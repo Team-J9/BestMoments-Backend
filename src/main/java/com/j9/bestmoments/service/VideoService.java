@@ -53,6 +53,21 @@ public class VideoService {
                 .orElseThrow(EntityNotFoundException::new);
     }
 
+    public Video findByIdAndUploaderId(UUID id, UUID memberId) {
+        return videoRepository.findByIdAndUploaderId(id, memberId)
+                .orElseThrow(EntityNotFoundException::new);
+    }
+
+    public Video findDeletedByIdAndUploaderId(UUID id, UUID memberId) {
+        return videoRepository.findByIdAndUploaderIdAndDeletedAtIsNotNull(id, memberId)
+                .orElseThrow(EntityNotFoundException::new);
+    }
+
+    public Video findPublicById(UUID id) {
+        return videoRepository.findByIdAndVideoStatus(id, VideoStatus.PUBLIC)
+                .orElseThrow(EntityNotFoundException::new);
+    }
+
     @Transactional
     public Video update(Video video, VideoUpdateDto updateDto) {
         video.setTitle(updateDto.title());
@@ -76,40 +91,26 @@ public class VideoService {
         return video;
     }
 
-    // 조회할 수 있는 영상만 조회
-    public Page<Video> findAllByUploaderId(UUID currentMemberId, UUID memberId, Pageable pageable) {
-        if (currentMemberId.equals(memberId)) {
-            return videoRepository.findAllByUploaderIdAndDeletedAtIsNull(
-                    memberId,
-                    PageRequest.of(pageable.getPageNumber(), pageable.getPageSize())
-            );
-        }
-        return videoRepository.findAllByUploaderIdAndVideoStatusAndDeletedAtIsNull(
-                memberId,
-                VideoStatus.PUBLIC,
-                PageRequest.of(pageable.getPageNumber(), pageable.getPageSize())
-        );
-    }
-
-    public Page<Video> findAllDeletedByUploaderId(UUID memberId, Pageable pageable) {
+    public Page<Video> findAllActivatedByUploaderId(UUID memberId, Pageable pageable) {
         return videoRepository.findAllByUploaderIdAndDeletedAtIsNull(
                 memberId,
                 PageRequest.of(pageable.getPageNumber(), pageable.getPageSize())
         );
     }
 
-    public void checkCanRead(Member member, Video video) {
-        if (video.canBeReadBy(member)) {
-            return;
-        }
-        throw new AccessDeniedException("권한 없음");
+    public Page<Video> findAllDeletedByUploaderId(UUID memberId, Pageable pageable) {
+        return videoRepository.findAllByUploaderIdAndDeletedAtIsNotNull(
+                memberId,
+                PageRequest.of(pageable.getPageNumber(), pageable.getPageSize())
+        );
     }
 
-    public void checkCanWrite(Member member, Video video) {
-        if (video.canBeWrittenBy(member)) {
-            return;
-        }
-        throw new AccessDeniedException("권한 없음");
+    public Page<Video> findAllPublicByUploaderId(UUID memberId, Pageable pageable) {
+        return videoRepository.findAllByUploaderIdAndVideoStatusAndDeletedAtIsNull(
+                memberId,
+                VideoStatus.PUBLIC,
+                PageRequest.of(pageable.getPageNumber(), pageable.getPageSize())
+        );
     }
 
 }
