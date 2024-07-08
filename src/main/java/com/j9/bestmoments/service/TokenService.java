@@ -2,7 +2,7 @@ package com.j9.bestmoments.service;
 
 import com.j9.bestmoments.domain.Member;
 import com.j9.bestmoments.domain.Token;
-import com.j9.bestmoments.dto.response.JwtTokenDto;
+import com.j9.bestmoments.dto.response.LoginDto;
 import com.j9.bestmoments.jwt.JwtTokenProvider;
 import com.j9.bestmoments.repository.TokenRepository;
 import lombok.RequiredArgsConstructor;
@@ -20,7 +20,7 @@ public class TokenService {
     private final JwtTokenProvider jwtTokenProvider;
 
     @Transactional
-    public JwtTokenDto create(Member member) {
+    public LoginDto create(Member member) {
         String accessToken = jwtTokenProvider.generateAccessToken(member);
         String refreshToken = jwtTokenProvider.generateRefreshToken(member);
         Token token = Token.builder()
@@ -32,7 +32,7 @@ public class TokenService {
         log.error(token.getAccessToken());
         log.error(token.getRefreshToken());
         log.error(tokenRepository.findAll().get(0).getAccessToken());
-        return new JwtTokenDto("Bearer", accessToken, refreshToken);
+        return new LoginDto("Bearer", accessToken, refreshToken, member.getDeletedAt());
     }
 
     public Token findByAnyToken(String token) {
