@@ -39,6 +39,15 @@ public class VideoService {
         return video;
     }
 
+    public Page<Video> findAll(Pageable pageable) {
+        return videoRepository.findAll(
+                PageRequest.of(
+                        pageable.getPageNumber(),
+                        pageable.getPageSize()
+                )
+        );
+    }
+
     public Video findById(UUID id) {
         return videoRepository.findById(id)
                 .orElseThrow(EntityNotFoundException::new);

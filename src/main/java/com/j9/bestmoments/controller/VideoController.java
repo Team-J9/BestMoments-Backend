@@ -106,10 +106,8 @@ public class VideoController {
     @GetMapping("/by/{memberId}")
     public ResponseEntity<Page<VideoPreviewDto>> findAllByUploaderId(@PathVariable UUID memberId, Pageable pageable) {
         UUID currentMemberId = UUID.fromString(SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString());
-        return ResponseEntity.ok(
-                videoService.findAllByUploaderId(currentMemberId, memberId, pageable)
-                        .map(VideoPreviewDto::of)
-        );
+        Page<Video> videos = videoService.findAllByUploaderId(currentMemberId, memberId, pageable);
+        return ResponseEntity.ok(videos.map(VideoPreviewDto::of));
     }
 
 }
