@@ -3,7 +3,7 @@ package com.j9.bestmoments.controller;
 import com.j9.bestmoments.domain.Member;
 import com.j9.bestmoments.dto.request.MemberUpdateDto;
 import com.j9.bestmoments.dto.response.MemberFindDto;
-import com.j9.bestmoments.dto.response.MemberSummaryDto;
+import com.j9.bestmoments.dto.response.MemberPreviewDto;
 import com.j9.bestmoments.service.MemberService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -29,10 +29,10 @@ public class MemberController {
 
     @GetMapping("/my-page")
     @Operation(summary = "현재 사용자 정보 조회", description = "현재 사용자 헤더 정보 조회")
-    public ResponseEntity<MemberSummaryDto> getCurrentMemberSummary() {
+    public ResponseEntity<MemberPreviewDto> getCurrentMemberSummary() {
         UUID memberId = UUID.fromString(SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString());
         Member member = memberService.findById(memberId);
-        return ResponseEntity.ok(MemberSummaryDto.of(member));
+        return ResponseEntity.ok(MemberPreviewDto.of(member));
     }
 
     @GetMapping("/{memberId}")
