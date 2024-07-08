@@ -77,7 +77,7 @@ public class Video {
     }
 
     public boolean canBeWrittenBy(Member member) {
-        return member.equals(uploader) || member.getRole().equals(MemberRole.ADMIN);
+        return member.equals(uploader);
     }
 
     public boolean canBeReadBy(Member member) {
