@@ -8,6 +8,9 @@ import com.j9.bestmoments.repository.MemberRepository;
 import jakarta.persistence.EntityNotFoundException;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,6 +23,12 @@ public class MemberService {
     public Member findById(String id) {
         return memberRepository.findById(UUID.fromString(id))
                 .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 유저입니다."));
+    }
+
+    public Page<Member> findAll(Pageable pageable) {
+        return memberRepository.findAll(PageRequest.of(
+                pageable.getPageNumber(), pageable.getPageSize()
+        ));
     }
 
     public Member findByIdAndDeletedAtIsNull(UUID id) {

@@ -2,14 +2,14 @@ package com.j9.bestmoments.dto.response;
 
 import com.j9.bestmoments.domain.Member;
 
-public record MemberSummaryDto(
+public record MemberPreviewDto(
         String id,
         String name,
         String profileImageUrl
 ) {
 
-    public static MemberSummaryDto of(Member member) {
-        return new MemberSummaryDto(
+    public static MemberPreviewDto of(Member member) {
+        return new MemberPreviewDto(
                 member.getId().toString(),
                 member.getName(),
                 member.getProfileImageUrl()

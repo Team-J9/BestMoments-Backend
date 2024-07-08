@@ -1,5 +1,6 @@
 package com.j9.bestmoments.config;
 
+import com.j9.bestmoments.domain.MemberRole;
 import com.j9.bestmoments.jwt.JwtAuthenticationFilter;
 import com.j9.bestmoments.jwt.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
@@ -21,7 +22,6 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig {
 
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
-    private final JwtTokenProvider jwtTokenProvider;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -35,10 +35,11 @@ public class SecurityConfig {
                 .sessionManagement(sessionManagement -> sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
-                        .requestMatchers("/auth/login/**").permitAll()
-//                        .anyRequest().permitAll()
-                        .anyRequest().authenticated()
+                                .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
+                                .requestMatchers("/auth/login/**").permitAll()
+                                .requestMatchers("/admin/**").hasRole(MemberRole.ADMIN.getValue())
+        //                        .anyRequest().permitAll()
+                                .anyRequest().authenticated()
                 )
 
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
