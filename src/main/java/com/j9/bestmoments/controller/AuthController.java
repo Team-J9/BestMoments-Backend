@@ -1,7 +1,6 @@
 package com.j9.bestmoments.controller;
 
-import com.j9.bestmoments.domain.Token;
-import com.j9.bestmoments.dto.response.JwtTokenDto;
+import com.j9.bestmoments.dto.response.LoginDto;
 import com.j9.bestmoments.dto.response.OAuthUserInfoDto;
 import com.j9.bestmoments.service.GoogleAuthService;
 import com.j9.bestmoments.service.OAuthService;
@@ -35,7 +34,7 @@ public class AuthController {
 
     @GetMapping("/login/{oAuthProvider}")
     @Operation(summary = "OAuth 인증코드로 로그인/회원가입", description = "oAuthProvider: google")
-    public ResponseEntity<JwtTokenDto> login(@PathVariable String oAuthProvider, @RequestParam String code) {
+    public ResponseEntity<LoginDto> login(@PathVariable String oAuthProvider, @RequestParam String code) {
         OAuthService oAuthService = switch (oAuthProvider) {
             case "google" -> googleAuthService;
             default -> throw new OAuth2AuthenticationException("존재하지 않는 OAuth 인증 방식입니다.");
@@ -43,7 +42,7 @@ public class AuthController {
         OAuthUserInfoDto oAuthUserInfo = oAuthService.getUserInfo(code);
         Member member = memberService.findOrSaveByOAuthInfo(oAuthUserInfo);
 
-        JwtTokenDto jwtToken = tokenService.create(member);
+        LoginDto jwtToken = tokenService.create(member);
         return ResponseEntity.ok(jwtToken);
     }
 

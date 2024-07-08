@@ -1,6 +1,5 @@
 package com.j9.bestmoments.jwt;
 
-import com.j9.bestmoments.dto.response.JwtTokenDto;
 import com.j9.bestmoments.domain.Member;
 import com.sun.security.auth.UserPrincipal;
 import io.jsonwebtoken.Claims;
