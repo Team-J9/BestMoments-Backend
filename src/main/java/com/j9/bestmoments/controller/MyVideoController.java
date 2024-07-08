@@ -41,42 +41,52 @@ public class MyVideoController {
     @Operation(summary = "동영상 업로드")
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<VideoFindDto> upload(@ModelAttribute @Valid VideoCreateDto createDto) {
-        String id = SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString();
-        Member member = memberService.findById(id);
+        UUID memberId = (UUID) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Member member = memberService.findById(memberId);
         Video video = videoService.upload(member, createDto);
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(VideoFindDto.of(video));
     }
 
-    @Operation(summary = "동영상 정보 수정")
+    @Operation(summary = "내 동영상 목록 조회")
+    @GetMapping()
+    public ResponseEntity<Page<VideoPreviewDto>> findAll(Pageable pageable) {
+        UUID memberId = (UUID) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Page<Video> videos = videoService.findAllActivatedByUploaderId(memberId, pageable);
+        return ResponseEntity.ok(videos.map(VideoPreviewDto::of));
+    }
+
+    @Operation(summary = "내 동영상 열람")
+    @GetMapping("/{videoId}")
+    public ResponseEntity<VideoFindDto> findById(@PathVariable UUID videoId) {
+        UUID memberId = UUID.fromString(SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString());
+        Video video = videoService.findByIdAndUploaderId(videoId, memberId);
+        return ResponseEntity.ok(VideoFindDto.of(video));
+    }
+
+    @Operation(summary = "내 동영상 정보 수정")
     @PatchMapping("/{videoId}")
     public ResponseEntity<VideoFindDto> update(@PathVariable UUID videoId, @RequestBody VideoUpdateDto updateDto) {
         UUID memberId = UUID.fromString(SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString());
-        Member member = memberService.findById(memberId);
-        Video video = videoService.findById(videoId);
-        videoService.checkCanRead(member, video);
+        Video video = videoService.findByIdAndUploaderId(videoId, memberId);
         videoService.update(video, updateDto);
         return ResponseEntity.ok(VideoFindDto.of(video));
     }
 
-    @Operation(summary = "동영상 삭제 (휴지통으로 이동)")
+    @Operation(summary = "내 동영상 삭제 (휴지통으로 이동)")
     @DeleteMapping("/{videoId}")
     public ResponseEntity<VideoFindDto> softDelete(@PathVariable UUID videoId) {
         UUID memberId = UUID.fromString(SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString());
-        Member member = memberService.findById(memberId);
-        Video video = videoService.findById(videoId);
-        videoService.checkCanWrite(member, video);
+        Video video = videoService.findByIdAndUploaderId(videoId, memberId);
         videoService.softDelete(video);
         return ResponseEntity.ok(VideoFindDto.of(video));
     }
 
-    @Operation(summary = "동영상 복구 (휴지통에서 복구)")
+    @Operation(summary = "내 동영상 복구 (휴지통에서 복구)")
     @PostMapping("/{videoId}")
     public ResponseEntity<VideoFindDto> restore(@PathVariable UUID videoId) {
         UUID memberId = UUID.fromString(SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString());
-        Member member = memberService.findById(memberId);
-        Video video = videoService.findById(videoId);
-        videoService.checkCanWrite(member, video);
+        Video video = videoService.findDeletedByIdAndUploaderId(videoId, memberId);
         videoService.restore(video);
         return ResponseEntity.ok(VideoFindDto.of(video));
     }
