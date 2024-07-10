@@ -41,7 +41,7 @@ public class MyVideoController {
     @Operation(summary = "동영상 업로드")
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<VideoFindDto> upload(@ModelAttribute @Valid VideoCreateDto createDto) {
-        UUID memberId = (UUID) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        UUID memberId = UUID.fromString(SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString());
         Member member = memberService.findById(memberId);
         Video video = videoService.upload(member, createDto);
         return ResponseEntity.status(HttpStatus.CREATED)
@@ -51,7 +51,7 @@ public class MyVideoController {
     @Operation(summary = "내 동영상 목록 조회")
     @GetMapping()
     public ResponseEntity<Page<VideoPreviewDto>> findAll(Pageable pageable) {
-        UUID memberId = (UUID) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        UUID memberId = UUID.fromString(SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString());
         Page<Video> videos = videoService.findAllActivatedByUploaderId(memberId, pageable);
         return ResponseEntity.ok(videos.map(VideoPreviewDto::of));
     }
