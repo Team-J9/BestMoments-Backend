@@ -5,11 +5,13 @@ import com.j9.bestmoments.dto.request.MemberUpdateDto;
 import com.j9.bestmoments.dto.response.MemberFindDto;
 import com.j9.bestmoments.dto.response.MemberPreviewDto;
 import com.j9.bestmoments.service.MemberService;
+import com.j9.bestmoments.util.AuthenticationUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -30,22 +32,22 @@ public class MemberController {
     @GetMapping("/my-page")
     @Operation(summary = "현재 사용자 정보 조회", description = "현재 사용자 헤더 정보 조회")
     public ResponseEntity<MemberPreviewDto> getCurrentMemberSummary() {
-        UUID memberId = UUID.fromString(SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString());
+        UUID memberId = AuthenticationUtil.getMemberId();
         Member member = memberService.findById(memberId);
         return ResponseEntity.ok(MemberPreviewDto.of(member));
     }
 
     @GetMapping("/{memberId}")
     @Operation(summary = "사용자 상세 정보 조회", description = "사용자 id로 상세 정보 조회, 탈퇴한 사용자는 표기되지 않음")
-    public ResponseEntity<MemberFindDto> getMemberInfo(@PathVariable String memberId) {
-        Member member = memberService.findByIdAndDeletedAtIsNull(UUID.fromString(memberId));
+    public ResponseEntity<MemberFindDto> getMemberInfo(@PathVariable UUID memberId) {
+        Member member = memberService.findByIdAndDeletedAtIsNull(memberId);
         return ResponseEntity.ok(MemberFindDto.of(member));
     }
 
     @DeleteMapping()
     @Operation(summary = "회원 탈퇴", description = "soft delete")
     public ResponseEntity<String> delete() {
-        UUID memberId = UUID.fromString(SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString());
+        UUID memberId = AuthenticationUtil.getMemberId();
         Member member = memberService.findById(memberId);
         memberService.softDelete(member);
         return ResponseEntity.ok("성공적으로 탈퇴하였습니다.");
@@ -54,7 +56,7 @@ public class MemberController {
     @PatchMapping("/restore")
     @Operation(summary = "회원 탈퇴 철회")
     public ResponseEntity<String> restore() {
-        UUID memberId = UUID.fromString(SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString());
+        UUID memberId = AuthenticationUtil.getMemberId();
         Member member = memberService.findById(memberId);
         memberService.restore(member);
         return ResponseEntity.ok("성공적으로 복구하였습니다.");
@@ -63,7 +65,7 @@ public class MemberController {
     @PatchMapping("/my-page")
     @Operation(summary = "현재 사용자 정보 수정")
     public ResponseEntity<MemberFindDto> update(@RequestBody MemberUpdateDto updateDto) {
-        UUID memberId = UUID.fromString(SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString());
+        UUID memberId = AuthenticationUtil.getMemberId();
         Member member = memberService.findById(memberId);
         memberService.update(member, updateDto);
         return ResponseEntity.ok(MemberFindDto.of(member));
