@@ -9,6 +9,7 @@ import com.j9.bestmoments.dto.request.VideoUpdateDto;
 import com.j9.bestmoments.repository.VideoRepository;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.security.auth.message.AuthException;
+import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -89,6 +90,12 @@ public class VideoService {
         video.restore();
         videoRepository.save(video);
         return video;
+    }
+
+    @Transactional
+    public void setVideoTags(Video video, List<String> tags) {
+        video.setVideoTags(tags);
+        videoRepository.save(video);
     }
 
     public Page<Video> findAllActivatedByUploaderId(UUID memberId, Pageable pageable) {
