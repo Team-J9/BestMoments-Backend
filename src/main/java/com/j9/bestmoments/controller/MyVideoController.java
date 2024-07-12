@@ -110,4 +110,12 @@ public class MyVideoController {
         return ResponseEntity.ok(null);
     }
 
+    @Operation(summary = "태그로 동영상 목록 조회")
+    @GetMapping("/tags/{tag}")
+    public ResponseEntity<Page<VideoPreviewDto>> findAllByTag(@PathVariable String tag, Pageable pageable) {
+        UUID memberId = UUID.fromString(SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString());
+        Page<Video> videos = videoService.findAllByUploaderAndTag(memberId, tag, pageable);
+        return ResponseEntity.ok(videos.map(VideoPreviewDto::of));
+    }
+
 }

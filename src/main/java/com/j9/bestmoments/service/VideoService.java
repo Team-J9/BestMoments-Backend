@@ -128,4 +128,12 @@ public class VideoService {
         );
     }
 
+    public Page<Video> findAllByUploaderAndTag(UUID memberId, String tag, Pageable pageable) {
+        return videoRepository.findAllByUploaderIdAndTagsContainsAndDeletedAtIsNull(
+                memberId,
+                tag,
+                PageRequest.of(pageable.getPageNumber(), pageable.getPageSize())
+        );
+    }
+
 }
