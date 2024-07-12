@@ -31,10 +31,17 @@ public class VideoController {
         return ResponseEntity.ok(VideoFindDto.of(video));
     }
 
-    @Operation(summary = "사용자의 동영상 목록 조회")
+    @Operation(summary = "게시자로 동영상 목록 조회")
     @GetMapping("/by/{memberId}")
     public ResponseEntity<Page<VideoPreviewDto>> findAllByUploaderId(@PathVariable UUID memberId, Pageable pageable) {
         Page<Video> videos = videoService.findAllPublicByUploaderId(memberId, pageable);
+        return ResponseEntity.ok(videos.map(VideoPreviewDto::of));
+    }
+
+    @Operation(summary = "태그로 동영상 목록 조회")
+    @GetMapping("/tags/{tag}")
+    public ResponseEntity<Page<VideoPreviewDto>> findAllByTag(@PathVariable String tag, Pageable pageable) {
+        Page<Video> videos = videoService.findAllPublicByTag(tag, pageable);
         return ResponseEntity.ok(videos.map(VideoPreviewDto::of));
     }
 

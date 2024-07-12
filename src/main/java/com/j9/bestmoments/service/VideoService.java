@@ -120,4 +120,12 @@ public class VideoService {
         );
     }
 
+    public Page<Video> findAllPublicByTag(String tag, Pageable pageable) {
+        return videoRepository.findAllByTagsContainsAndVideoStatusAndDeletedAtIsNull(
+                tag,
+                VideoStatus.PUBLIC,
+                PageRequest.of(pageable.getPageNumber(), pageable.getPageSize())
+        );
+    }
+
 }
