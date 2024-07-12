@@ -1,6 +1,7 @@
 package com.j9.bestmoments.domain;
 
 import jakarta.persistence.Column;
+import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.EnumType;
@@ -11,6 +12,8 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 import lombok.Builder;
 import lombok.Getter;
@@ -47,6 +50,9 @@ public class Video {
     private LocalDateTime createdAt;
     private LocalDateTime deletedAt;
 
+    @ElementCollection
+    private List<String> tags = new ArrayList<>();
+
     @Builder
     public Video(Member uploader, String fileUrl, String title, String description, VideoStatus videoStatus) {
         this.uploader = uploader;
@@ -74,6 +80,10 @@ public class Video {
 
     public void setVideoStatus(VideoStatus videoStatus) {
         this.videoStatus = videoStatus;
+    }
+
+    public void setVideoTags(List<String> tags) {
+        this.tags = tags;
     }
 
 }
