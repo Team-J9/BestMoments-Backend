@@ -4,13 +4,13 @@ import com.j9.bestmoments.domain.Member;
 import com.j9.bestmoments.domain.MemberRole;
 import com.j9.bestmoments.domain.Video;
 import com.j9.bestmoments.domain.VideoStatus;
-import com.j9.bestmoments.dto.request.VideoCreateDto;
 import com.j9.bestmoments.dto.request.VideoUpdateDto;
 import com.j9.bestmoments.repository.MemberRepository;
 import com.j9.bestmoments.repository.VideoRepository;
 import com.j9.bestmoments.util.MemberGenerator;
 import com.j9.bestmoments.util.VideoGenerator;
 import jakarta.persistence.EntityNotFoundException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import org.junit.jupiter.api.Assertions;
@@ -200,6 +200,69 @@ public class VideoServiceTest {
 
         Assertions.assertTrue(foundVideos.contains(publicVideo));
         Assertions.assertFalse(foundVideos.contains(privateVideo));
+        Assertions.assertFalse(foundVideos.contains(urlPublicVideo));
+    }
+
+    @Test
+    @Transactional
+    void setVideoTags() {
+        String tag1 = "tag1";
+        String tag2 = "tag2";
+        List<String> tags = new ArrayList<>();
+        tags.add(tag1);
+        tags.add(tag2);
+
+        videoService.setVideoTags(publicVideo, tags);
+
+        Video foundVideo = videoService.findById(publicVideo.getId());
+        Assertions.assertTrue(foundVideo.getTags().contains(tag1));
+        Assertions.assertTrue(foundVideo.getTags().contains(tag2));
+    }
+
+    @Test
+    @Transactional
+    void findAllPublicByTag() {
+        String tag1 = "tag1";
+        String tag2 = "tag2";
+        List<String> tags = new ArrayList<>();
+        tags.add(tag1);
+        tags.add(tag2);
+
+        Video untaggedPublicVideo = VideoGenerator.createVideo(member, "video0", VideoStatus.PUBLIC);
+        videoRepository.save(untaggedPublicVideo);
+
+        videoService.setVideoTags(publicVideo, tags);
+        videoService.setVideoTags(privateVideo, tags);
+        videoService.setVideoTags(urlPublicVideo, tags);
+
+        List<Video> foundVideos = videoService
+                .findAllPublicByTag(tag1, PageRequest.of(0, 100))
+                .toList();
+
+        Assertions.assertTrue(foundVideos.contains(publicVideo));
+        Assertions.assertFalse(foundVideos.contains(privateVideo));
+        Assertions.assertFalse(foundVideos.contains(urlPublicVideo));
+        Assertions.assertFalse(foundVideos.contains(untaggedPublicVideo));
+    }
+
+    @Test
+    @Transactional
+    void findAllByUploaderAndTag() {
+        String tag1 = "tag1";
+        String tag2 = "tag2";
+        List<String> tags = new ArrayList<>();
+        tags.add(tag1);
+        tags.add(tag2);
+
+        videoService.setVideoTags(publicVideo, tags);
+        videoService.setVideoTags(privateVideo, tags);
+
+        List<Video> foundVideos = videoService
+                .findAllByUploaderAndTag(member.getId(), tag1, PageRequest.of(0, 100))
+                .toList();
+
+        Assertions.assertTrue(foundVideos.contains(publicVideo));
+        Assertions.assertTrue(foundVideos.contains(privateVideo));
         Assertions.assertFalse(foundVideos.contains(urlPublicVideo));
     }
 
