@@ -177,4 +177,18 @@ public class VideoServiceTest {
         Assertions.assertFalse(foundVideos.contains(urlPublicVideo));
     }
 
+    @Test
+    @Transactional
+    void findAllDeletedByUploaderId() {
+        videoService.softDelete(urlPublicVideo);
+
+        List<Video> foundVideos = videoService
+                .findAllDeletedByUploaderId(member.getId(), PageRequest.of(0, 100))
+                .toList();
+
+        Assertions.assertFalse(foundVideos.contains(publicVideo));
+        Assertions.assertFalse(foundVideos.contains(privateVideo));
+        Assertions.assertTrue(foundVideos.contains(urlPublicVideo));
+    }
+
 }
