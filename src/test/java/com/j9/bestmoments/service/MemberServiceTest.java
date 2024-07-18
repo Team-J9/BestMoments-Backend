@@ -125,7 +125,12 @@ public class MemberServiceTest {
         Assertions.assertThrows(EntityNotFoundException.class, () -> memberService.findByIdAndDeletedAtIsNull(id));
     }
 
-
-
+    @Test
+    void restore() {
+        memberService.softDelete(member1);
+        memberService.restore(member1);
+        UUID id = member1.getId();
+        Assertions.assertDoesNotThrow(() -> memberService.findByIdAndDeletedAtIsNull(id));
+    }
 
 }
