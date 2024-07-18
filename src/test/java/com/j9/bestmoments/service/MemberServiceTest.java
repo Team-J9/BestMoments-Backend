@@ -118,5 +118,14 @@ public class MemberServiceTest {
         Assertions.assertEquals(changedDescription, foundMember.getDescription());
     }
 
+    @Test
+    void softDelete() {
+        memberService.softDelete(member1);
+        UUID id = member1.getId();
+        Assertions.assertThrows(EntityNotFoundException.class, () -> memberService.findByIdAndDeletedAtIsNull(id));
+    }
+
+
+
 
 }
