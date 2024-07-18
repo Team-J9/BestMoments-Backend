@@ -20,7 +20,7 @@ public interface VideoRepository extends JpaRepository<Video, UUID> {
 
     Optional<Video> findByIdAndUploaderIdAndDeletedAtIsNotNull(UUID id, UUID uploaderId);
 
-    Optional<Video> findByIdAndVideoStatus(UUID id, VideoStatus videoStatus);
+    Optional<Video> findByIdAndVideoStatusAndDeletedAtIsNull(UUID id, VideoStatus videoStatus);
 
     Optional<Video> findByIdAndUploaderId(UUID id, UUID uploaderId);
 

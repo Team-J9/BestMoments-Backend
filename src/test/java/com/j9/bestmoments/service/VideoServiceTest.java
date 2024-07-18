@@ -142,4 +142,14 @@ public class VideoServiceTest {
         Assertions.assertEquals(changedVideoStatus, foundVideo.getVideoStatus());
     }
 
+    @Test
+    @Transactional
+    void softDelete() {
+        videoService.softDelete(publicVideo);
+        UUID id = publicVideo.getId();
+        UUID uploaderId = publicVideo.getUploader().getId();
+        Assertions.assertThrows(EntityNotFoundException.class, () -> videoService.findPublicById(id));
+        Assertions.assertDoesNotThrow(() -> videoService.findDeletedByIdAndUploaderId(id, uploaderId));
+    }
+
 }
