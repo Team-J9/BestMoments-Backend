@@ -191,4 +191,16 @@ public class VideoServiceTest {
         Assertions.assertTrue(foundVideos.contains(urlPublicVideo));
     }
 
+    @Test
+    @Transactional
+    void findAllPublicByUploaderId() {
+        List<Video> foundVideos = videoService
+                .findAllPublicByUploaderId(member.getId(), PageRequest.of(0, 100))
+                .toList();
+
+        Assertions.assertTrue(foundVideos.contains(publicVideo));
+        Assertions.assertFalse(foundVideos.contains(privateVideo));
+        Assertions.assertFalse(foundVideos.contains(urlPublicVideo));
+    }
+
 }
