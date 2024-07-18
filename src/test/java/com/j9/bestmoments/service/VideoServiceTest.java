@@ -9,7 +9,9 @@ import com.j9.bestmoments.repository.MemberRepository;
 import com.j9.bestmoments.repository.VideoRepository;
 import com.j9.bestmoments.util.MemberGenerator;
 import com.j9.bestmoments.util.VideoGenerator;
+import jakarta.persistence.EntityNotFoundException;
 import java.util.List;
+import java.util.UUID;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -53,6 +55,21 @@ public class VideoServiceTest {
         Assertions.assertTrue(foundVideos.contains(publicVideo));
         Assertions.assertTrue(foundVideos.contains(privateVideo));
         Assertions.assertTrue(foundVideos.contains(urlPublicVideo));
+    }
+
+    @Test
+    @Transactional
+    void findById_Success() {
+        UUID id = publicVideo.getId();
+        Video foundVideo = videoService.findById(id);
+        Assertions.assertEquals(publicVideo, foundVideo);
+    }
+
+    @Test
+    @Transactional
+    void findById_Fail() {
+        UUID id = UUID.randomUUID();
+        Assertions.assertThrows(EntityNotFoundException.class, () -> videoService.findById(id));
     }
 
 }
