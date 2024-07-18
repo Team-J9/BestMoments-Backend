@@ -72,4 +72,23 @@ public class VideoServiceTest {
         Assertions.assertThrows(EntityNotFoundException.class, () -> videoService.findById(id));
     }
 
+    @Test
+    @Transactional
+    void findByIdAndUploaderId_Success() {
+        UUID videoId = publicVideo.getId();
+        UUID memberId = member.getId();
+        Video foundVideo = videoService.findByIdAndUploaderId(videoId, memberId);
+        Assertions.assertEquals(publicVideo, foundVideo);
+    }
+
+    @Test
+    @Transactional
+    void findByIdAndUploaderId_Fail() {
+        UUID videoId = publicVideo.getId();
+        UUID memberId = member.getId();
+        UUID randomId = UUID.randomUUID();
+        Assertions.assertThrows(EntityNotFoundException.class, () -> videoService.findByIdAndUploaderId(videoId, randomId));
+        Assertions.assertThrows(EntityNotFoundException.class, () -> videoService.findByIdAndUploaderId(randomId, memberId));
+    }
+
 }
