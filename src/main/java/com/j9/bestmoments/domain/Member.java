@@ -11,6 +11,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
@@ -27,8 +28,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 @Entity
 @Getter
-@EqualsAndHashCode
 @NoArgsConstructor
+@EqualsAndHashCode(of = {"id", "oauthProvider", "oauthId"})
 @EntityListeners(AuditingEntityListener.class)
 public class Member implements UserDetails {
 
