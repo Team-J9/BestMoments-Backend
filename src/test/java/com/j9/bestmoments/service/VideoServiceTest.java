@@ -4,7 +4,6 @@ import com.j9.bestmoments.domain.Member;
 import com.j9.bestmoments.domain.MemberRole;
 import com.j9.bestmoments.domain.Video;
 import com.j9.bestmoments.domain.VideoStatus;
-import com.j9.bestmoments.dto.request.VideoCreateDto;
 import com.j9.bestmoments.dto.request.VideoUpdateDto;
 import com.j9.bestmoments.repository.MemberRepository;
 import com.j9.bestmoments.repository.VideoRepository;
@@ -214,10 +213,36 @@ public class VideoServiceTest {
         tags.add(tag2);
 
         videoService.setVideoTags(publicVideo, tags);
-        
+
         Video foundVideo = videoService.findById(publicVideo.getId());
         Assertions.assertTrue(foundVideo.getTags().contains(tag1));
         Assertions.assertTrue(foundVideo.getTags().contains(tag2));
+    }
+
+    @Test
+    @Transactional
+    void findAllPublicByTag() {
+        String tag1 = "tag1";
+        String tag2 = "tag2";
+        List<String> tags = new ArrayList<>();
+        tags.add(tag1);
+        tags.add(tag2);
+
+        Video untaggedPublicVideo = VideoGenerator.createVideo(member, "video0", VideoStatus.PUBLIC);
+        videoRepository.save(untaggedPublicVideo);
+
+        videoService.setVideoTags(publicVideo, tags);
+        videoService.setVideoTags(privateVideo, tags);
+        videoService.setVideoTags(urlPublicVideo, tags);
+
+        List<Video> foundVideos = videoService
+                .findAllPublicByTag(tag1, PageRequest.of(0, 100))
+                .toList();
+
+        Assertions.assertTrue(foundVideos.contains(publicVideo));
+        Assertions.assertFalse(foundVideos.contains(privateVideo));
+        Assertions.assertFalse(foundVideos.contains(urlPublicVideo));
+        Assertions.assertFalse(foundVideos.contains(untaggedPublicVideo));
     }
 
 }
