@@ -5,6 +5,7 @@ import com.j9.bestmoments.domain.MemberRole;
 import com.j9.bestmoments.domain.Video;
 import com.j9.bestmoments.domain.VideoStatus;
 import com.j9.bestmoments.dto.request.VideoCreateDto;
+import com.j9.bestmoments.dto.request.VideoUpdateDto;
 import com.j9.bestmoments.repository.MemberRepository;
 import com.j9.bestmoments.repository.VideoRepository;
 import com.j9.bestmoments.util.MemberGenerator;
@@ -123,6 +124,22 @@ public class VideoServiceTest {
     void findPublicById_Fail() {
         Assertions.assertThrows(EntityNotFoundException.class, () -> videoService.findPublicById(privateVideo.getId()));
         Assertions.assertThrows(EntityNotFoundException.class, () -> videoService.findPublicById(urlPublicVideo.getId()));
+    }
+
+    @Test
+    @Transactional
+    void update() {
+        String changedTitle = "changedTitle";
+        String changedDescription = "changedDescription";
+        VideoStatus changedVideoStatus = VideoStatus.PRIVATE;
+        VideoUpdateDto dto = new VideoUpdateDto(changedTitle, changedDescription, changedVideoStatus);
+
+        videoService.update(publicVideo, dto);
+
+        Video foundVideo = videoService.findById(publicVideo.getId());
+        Assertions.assertEquals(changedTitle, foundVideo.getTitle());
+        Assertions.assertEquals(changedDescription, foundVideo.getDescription());
+        Assertions.assertEquals(changedVideoStatus, foundVideo.getVideoStatus());
     }
 
 }
