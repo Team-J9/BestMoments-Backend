@@ -64,7 +64,7 @@ public class VideoService {
     }
 
     public Video findPublicById(UUID id) {
-        return videoRepository.findByIdAndVideoStatus(id, VideoStatus.PUBLIC)
+        return videoRepository.findByIdAndVideoStatusAndDeletedAtIsNull(id, VideoStatus.PUBLIC)
                 .orElseThrow(EntityNotFoundException::new);
     }
 
