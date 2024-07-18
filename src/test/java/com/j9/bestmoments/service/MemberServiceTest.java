@@ -1,6 +1,7 @@
 package com.j9.bestmoments.service;
 
 import com.j9.bestmoments.domain.Member;
+import com.j9.bestmoments.domain.MemberRole;
 import com.j9.bestmoments.dto.request.MemberUpdateDto;
 import com.j9.bestmoments.dto.response.OAuthUserInfoDto;
 import com.j9.bestmoments.repository.MemberRepository;
@@ -24,9 +25,9 @@ public class MemberServiceTest {
     @Autowired
     private MemberRepository memberRepository;
 
-    private final Member member1 = MemberGenerator.createGoogleUser("user1");
-    private final Member member2 = MemberGenerator.createGoogleUser("user2");
-    private final Member member3 = MemberGenerator.createGoogleUser("user3");
+    private final Member member1 = MemberGenerator.createGoogleMember("user1", MemberRole.USER);
+    private final Member member2 = MemberGenerator.createGoogleMember("user2", MemberRole.USER);
+    private final Member member3 = MemberGenerator.createGoogleMember("user3", MemberRole.USER);
 
     @BeforeEach
     void createMembers() {
