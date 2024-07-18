@@ -91,4 +91,23 @@ public class VideoServiceTest {
         Assertions.assertThrows(EntityNotFoundException.class, () -> videoService.findByIdAndUploaderId(randomId, memberId));
     }
 
+    @Test
+    @Transactional
+    void findDeletedByIdAndUploaderId_Success() {
+        UUID videoId = publicVideo.getId();
+        UUID memberId = member.getId();
+        publicVideo.softDelete();
+        videoRepository.save(publicVideo);
+        Video foundVideo = videoService.findDeletedByIdAndUploaderId(videoId, memberId);
+        Assertions.assertEquals(publicVideo, foundVideo);
+    }
+
+    @Test
+    @Transactional
+    void findDeletedByIdAndUploaderId_Fail() {
+        UUID videoId = publicVideo.getId();
+        UUID memberId = member.getId();
+        Assertions.assertThrows(EntityNotFoundException.class, () -> videoService.findDeletedByIdAndUploaderId(videoId, memberId));
+    }
+
 }
