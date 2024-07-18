@@ -163,4 +163,18 @@ public class VideoServiceTest {
         Assertions.assertThrows(EntityNotFoundException.class, () -> videoService.findDeletedByIdAndUploaderId(id, uploaderId));
     }
 
+    @Test
+    @Transactional
+    void findAllActivatedByUploaderId() {
+        videoService.softDelete(urlPublicVideo);
+
+        List<Video> foundVideos = videoService
+                .findAllActivatedByUploaderId(member.getId(), PageRequest.of(0, 100))
+                .toList();
+
+        Assertions.assertTrue(foundVideos.contains(publicVideo));
+        Assertions.assertTrue(foundVideos.contains(privateVideo));
+        Assertions.assertFalse(foundVideos.contains(urlPublicVideo));
+    }
+
 }
