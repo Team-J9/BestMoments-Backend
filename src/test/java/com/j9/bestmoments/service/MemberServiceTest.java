@@ -55,5 +55,20 @@ public class MemberServiceTest {
         Assertions.assertThrows(EntityNotFoundException.class, () -> memberService.findById(id));
     }
 
+    @Test
+    void findByIdAndDeletedAtIsNull_Success() {
+        UUID id = member1.getId();
+        Member foundMember = memberService.findByIdAndDeletedAtIsNull(id);
+        Assertions.assertEquals(member1, foundMember);
+    }
+
+    @Test
+    void findByIdAndDeletedAtIsNull_Fail() {
+        member1.softDelete();
+        memberRepository.save(member1);
+        UUID id = member1.getId();
+        Assertions.assertThrows(EntityNotFoundException.class, () -> memberService.findByIdAndDeletedAtIsNull(id));
+    }
+
 
 }
