@@ -1,6 +1,7 @@
 package com.j9.bestmoments.service;
 
 import com.j9.bestmoments.domain.Member;
+import com.j9.bestmoments.dto.response.OAuthUserInfoDto;
 import com.j9.bestmoments.repository.MemberRepository;
 import com.j9.bestmoments.util.MemberGenerator;
 import jakarta.persistence.EntityNotFoundException;
@@ -11,6 +12,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 
 @SpringBootTest
@@ -68,6 +70,38 @@ public class MemberServiceTest {
         memberRepository.save(member1);
         UUID id = member1.getId();
         Assertions.assertThrows(EntityNotFoundException.class, () -> memberService.findByIdAndDeletedAtIsNull(id));
+    }
+
+    @Test
+    void findOrSaveByOAuthInfo_Find() {
+        OAuthUserInfoDto dto = new OAuthUserInfoDto(
+                member1.getOauthProvider(),
+                member1.getOauthId(),
+                null,
+                null,
+                null
+        );
+        Member foundMember = memberService.findOrSaveByOAuthInfo(dto);
+        Assertions.assertEquals(member1, foundMember);
+    }
+
+    @Test
+    void findOrSaveByOAuthInfo_Save() {
+        OAuthUserInfoDto dto = new OAuthUserInfoDto(
+                member1.getOauthProvider(),
+                UUID.randomUUID().toString(),
+                null,
+                null,
+                null
+        );
+        Page<Member> previousMembers = memberService.findAll(PageRequest.of(0, 100));
+
+        memberService.findOrSaveByOAuthInfo(dto);
+        Page<Member> currentMembers = memberService.findAll(PageRequest.of(0, 100));
+
+        long previousMembersCount = previousMembers.stream().count();
+        long currentMembersCount = currentMembers.stream().count();
+        Assertions.assertEquals(previousMembersCount + 1, currentMembersCount);
     }
 
 
