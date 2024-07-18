@@ -1,6 +1,7 @@
 package com.j9.bestmoments.service;
 
 import com.j9.bestmoments.domain.Member;
+import com.j9.bestmoments.dto.request.MemberUpdateDto;
 import com.j9.bestmoments.dto.response.OAuthUserInfoDto;
 import com.j9.bestmoments.repository.MemberRepository;
 import com.j9.bestmoments.util.MemberGenerator;
@@ -102,6 +103,19 @@ public class MemberServiceTest {
         long previousMembersCount = previousMembers.stream().count();
         long currentMembersCount = currentMembers.stream().count();
         Assertions.assertEquals(previousMembersCount + 1, currentMembersCount);
+    }
+
+    @Test
+    void update() {
+        String changedName = "changedName";
+        String changedDescription = "changedDescription";
+        MemberUpdateDto dto = new MemberUpdateDto(changedName, changedDescription);
+
+        memberService.update(member1, dto);
+
+        Member foundMember = memberService.findById(member1.getId());
+        Assertions.assertEquals(changedName, foundMember.getName());
+        Assertions.assertEquals(changedDescription, foundMember.getDescription());
     }
 
 
