@@ -24,4 +24,8 @@ public interface VideoRepository extends JpaRepository<Video, UUID> {
 
     Optional<Video> findByIdAndUploaderId(UUID id, UUID uploaderId);
 
+    Page<Video> findAllByTagsContainsAndVideoStatusAndDeletedAtIsNull(String tag, VideoStatus videoStatus, PageRequest pageRequest);
+
+    Page<Video> findAllByUploaderIdAndTagsContainsAndDeletedAtIsNull(UUID uploaderId, String tag, PageRequest pageRequest);
+
 }

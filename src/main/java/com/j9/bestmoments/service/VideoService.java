@@ -9,6 +9,7 @@ import com.j9.bestmoments.dto.request.VideoUpdateDto;
 import com.j9.bestmoments.repository.VideoRepository;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.security.auth.message.AuthException;
+import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -91,6 +92,12 @@ public class VideoService {
         return video;
     }
 
+    @Transactional
+    public void setVideoTags(Video video, List<String> tags) {
+        video.setVideoTags(tags);
+        videoRepository.save(video);
+    }
+
     public Page<Video> findAllActivatedByUploaderId(UUID memberId, Pageable pageable) {
         return videoRepository.findAllByUploaderIdAndDeletedAtIsNull(
                 memberId,
@@ -109,6 +116,22 @@ public class VideoService {
         return videoRepository.findAllByUploaderIdAndVideoStatusAndDeletedAtIsNull(
                 memberId,
                 VideoStatus.PUBLIC,
+                PageRequest.of(pageable.getPageNumber(), pageable.getPageSize())
+        );
+    }
+
+    public Page<Video> findAllPublicByTag(String tag, Pageable pageable) {
+        return videoRepository.findAllByTagsContainsAndVideoStatusAndDeletedAtIsNull(
+                tag,
+                VideoStatus.PUBLIC,
+                PageRequest.of(pageable.getPageNumber(), pageable.getPageSize())
+        );
+    }
+
+    public Page<Video> findAllByUploaderAndTag(UUID memberId, String tag, Pageable pageable) {
+        return videoRepository.findAllByUploaderIdAndTagsContainsAndDeletedAtIsNull(
+                memberId,
+                tag,
                 PageRequest.of(pageable.getPageNumber(), pageable.getPageSize())
         );
     }

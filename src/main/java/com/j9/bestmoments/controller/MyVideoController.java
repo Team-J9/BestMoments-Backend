@@ -12,6 +12,7 @@ import com.j9.bestmoments.util.AuthenticationUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -97,6 +98,23 @@ public class MyVideoController {
     public ResponseEntity<Page<VideoPreviewDto>> findDeletedVideos(Pageable pageable) {
         UUID memberId = UUID.fromString(SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString());
         Page<Video> videos = videoService.findAllDeletedByUploaderId(memberId, pageable);
+        return ResponseEntity.ok(videos.map(VideoPreviewDto::of));
+    }
+
+    @Operation(summary = "태그 수정")
+    @PostMapping("/{videoId}/tags")
+    public ResponseEntity<?> findAllByTag(@PathVariable UUID videoId, @RequestBody List<String> tags) {
+        UUID memberId = UUID.fromString(SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString());
+        Video video = videoService.findByIdAndUploaderId(videoId, memberId);
+        videoService.setVideoTags(video, tags);
+        return ResponseEntity.ok(null);
+    }
+
+    @Operation(summary = "태그로 동영상 목록 조회")
+    @GetMapping("/tags/{tag}")
+    public ResponseEntity<Page<VideoPreviewDto>> findAllByTag(@PathVariable String tag, Pageable pageable) {
+        UUID memberId = UUID.fromString(SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString());
+        Page<Video> videos = videoService.findAllByUploaderAndTag(memberId, tag, pageable);
         return ResponseEntity.ok(videos.map(VideoPreviewDto::of));
     }
 
