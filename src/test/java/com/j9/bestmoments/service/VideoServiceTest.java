@@ -245,4 +245,25 @@ public class VideoServiceTest {
         Assertions.assertFalse(foundVideos.contains(untaggedPublicVideo));
     }
 
+    @Test
+    @Transactional
+    void findAllByUploaderAndTag() {
+        String tag1 = "tag1";
+        String tag2 = "tag2";
+        List<String> tags = new ArrayList<>();
+        tags.add(tag1);
+        tags.add(tag2);
+
+        videoService.setVideoTags(publicVideo, tags);
+        videoService.setVideoTags(privateVideo, tags);
+
+        List<Video> foundVideos = videoService
+                .findAllByUploaderAndTag(member.getId(), tag1, PageRequest.of(0, 100))
+                .toList();
+
+        Assertions.assertTrue(foundVideos.contains(publicVideo));
+        Assertions.assertTrue(foundVideos.contains(privateVideo));
+        Assertions.assertFalse(foundVideos.contains(urlPublicVideo));
+    }
+
 }
