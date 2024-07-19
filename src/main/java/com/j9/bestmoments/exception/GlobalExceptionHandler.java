@@ -2,6 +2,7 @@ package com.j9.bestmoments.exception;
 
 import jakarta.persistence.EntityNotFoundException;
 import java.util.stream.Collectors;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
 @ControllerAdvice
+@Slf4j
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(EntityNotFoundException.class)
@@ -25,6 +27,7 @@ public class GlobalExceptionHandler {
                 .stream()
                 .map(DefaultMessageSourceResolvable::getDefaultMessage)
                 .collect(Collectors.joining(", "));
+        log.info("handled MethodArgumentNotValidException : {}", msg);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(msg);
     }
 
