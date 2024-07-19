@@ -1,6 +1,6 @@
 package com.j9.bestmoments.validator;
 
-import com.j9.bestmoments.constants.VideoType;
+import com.j9.bestmoments.constants.VideoFileTypes;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 import jakarta.validation.constraints.NotNull;
@@ -11,6 +11,6 @@ public class VideoTypeValidator implements ConstraintValidator<VideoTypeCheck, M
     @Override
     public boolean isValid(@NotNull MultipartFile file, ConstraintValidatorContext context) {
         String contentType = file.getContentType();
-        return VideoType.contains(contentType);
+        return VideoFileTypes.contains(contentType);
     }
 }

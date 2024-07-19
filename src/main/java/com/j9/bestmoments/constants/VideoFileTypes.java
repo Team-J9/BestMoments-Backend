@@ -6,7 +6,7 @@ import lombok.RequiredArgsConstructor;
 
 @Getter
 @RequiredArgsConstructor
-public enum VideoType {
+public enum VideoFileTypes {
     MP4("video/mp4"),
     AVI("video/x-msvideo"),
     MKV("video/x-matroska"),
@@ -22,8 +22,8 @@ public enum VideoType {
             return false;
         }
         String findingContentType = contentType.toLowerCase();
-        return Arrays.stream(VideoType.values())
-                .map(VideoType::getContentType)
+        return Arrays.stream(VideoFileTypes.values())
+                .map(VideoFileTypes::getContentType)
                 .anyMatch(type -> type.equals(findingContentType));
     }
 
