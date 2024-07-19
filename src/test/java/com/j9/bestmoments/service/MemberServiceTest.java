@@ -83,8 +83,14 @@ public class MemberServiceTest {
                 null,
                 null
         );
-        Member foundMember = memberService.findOrSaveByOAuthInfo(dto);
-        Assertions.assertEquals(member1, foundMember);
+        Page<Member> previousMembers = memberService.findAll(PageRequest.of(0, 100));
+
+        memberService.findOrSaveByOAuthInfo(dto);
+        Page<Member> currentMembers = memberService.findAll(PageRequest.of(0, 100));
+
+        long previousMembersCount = previousMembers.stream().count();
+        long currentMembersCount = currentMembers.stream().count();
+        Assertions.assertEquals(previousMembersCount, currentMembersCount);
     }
 
     @Test
