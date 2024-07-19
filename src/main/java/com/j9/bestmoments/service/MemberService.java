@@ -38,9 +38,8 @@ public class MemberService {
 
     @Transactional
     public Member findOrSaveByOAuthInfo(OAuthUserInfoDto oAuth2UserInfo) {
-        Member member = memberRepository.findByOauthProviderAndOauthId(oAuth2UserInfo.provider(), oAuth2UserInfo.id())
-                .orElse(this.create(oAuth2UserInfo));
-        return memberRepository.save(member);
+        return memberRepository.findByOauthProviderAndOauthId(oAuth2UserInfo.provider(), oAuth2UserInfo.id())
+                    .orElseGet(() -> memberRepository.save(this.create(oAuth2UserInfo)));
     }
 
     private Member create(OAuthUserInfoDto oAuthUserInfoDto) {
