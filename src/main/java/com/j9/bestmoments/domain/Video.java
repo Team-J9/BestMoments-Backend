@@ -10,6 +10,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToOne;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -39,6 +40,7 @@ public class Video {
     private UUID id;
     private String fileUrl;
     private String title;
+    @Lob
     private String description;
     @Enumerated(EnumType.STRING)
     private VideoStatus videoStatus;
