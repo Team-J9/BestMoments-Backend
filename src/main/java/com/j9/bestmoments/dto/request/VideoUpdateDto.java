@@ -17,6 +17,7 @@ public record VideoUpdateDto(
         @Size(max = 2000, message = "상세설명은 2000자 이내로 입력해주세요.")
         String description,
 
+        @NotNull
         VideoStatus videoStatus
 ) {
 
