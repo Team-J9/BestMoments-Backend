@@ -32,10 +32,10 @@ public class AuthController {
     private final MemberService memberService;
     private final TokenService tokenService;
 
-    @GetMapping("/login/{oAuthProvider}")
-    @Operation(summary = "OAuth 인증코드로 로그인/회원가입", description = "oAuthProvider: google")
-    public ResponseEntity<LoginDto> login(@PathVariable String oAuthProvider, @RequestParam String code) {
-        OAuthService oAuthService = switch (oAuthProvider) {
+    @GetMapping("/{registrationId}/callback")
+    @Operation(summary = "OAuth 인증코드로 로그인/회원가입", description = "registrationId: google")
+    public ResponseEntity<LoginDto> login(@PathVariable String registrationId, @RequestParam String code) {
+        OAuthService oAuthService = switch (registrationId) {
             case "google" -> googleAuthService;
             default -> throw new OAuth2AuthenticationException("존재하지 않는 OAuth 인증 방식입니다.");
         };
