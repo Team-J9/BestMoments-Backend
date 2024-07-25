@@ -1,9 +1,8 @@
 package com.j9.bestmoments.service;
 
-import com.j9.bestmoments.domain.AccessToken;
 import com.j9.bestmoments.domain.Member;
-import com.j9.bestmoments.domain.RefreshToken;
 import com.j9.bestmoments.domain.Token;
+import com.j9.bestmoments.domain.TokenType;
 import com.j9.bestmoments.dto.response.LoginDto;
 import com.j9.bestmoments.jwt.JwtTokenProvider;
 import com.j9.bestmoments.repository.TokenRepository;
@@ -27,21 +26,30 @@ public class TokenService {
         String accessToken = createAccessToken(member);
         String refreshToken = createRefreshToken(member);
         log.info("토큰 발급됨\n  - accessToken: {}\n  - refreshToken: {}", accessToken, refreshToken);
+        this.findByToken(accessToken);
         return new LoginDto(accessToken, refreshToken, member.getDeletedAt());
     }
 
     private String createAccessToken(Member member) {
-        String accessTokenValue = jwtTokenProvider.generateAccessToken(member);
-        AccessToken accessToken = new AccessToken(member, accessTokenValue);
+        String token = jwtTokenProvider.generateAccessToken(member);
+        Token accessToken = Token.builder()
+                .member(member)
+                .tokenType(TokenType.ACCESS_TOKEN)
+                .token(token)
+                .build();
         tokenRepository.save(accessToken);
-        return accessTokenValue;
+        return token;
     }
 
     private String createRefreshToken(Member member) {
-        String refreshTokenValue = jwtTokenProvider.generateRefreshToken(member);
-        RefreshToken refreshToken = new RefreshToken(member, refreshTokenValue);
+        String token = jwtTokenProvider.generateRefreshToken(member);
+        Token refreshToken = Token.builder()
+                .member(member)
+                .tokenType(TokenType.REFRESH_TOKEN)
+                .token(token)
+                .build();
         tokenRepository.save(refreshToken);
-        return refreshTokenValue;
+        return token;
     }
 
     @Transactional
