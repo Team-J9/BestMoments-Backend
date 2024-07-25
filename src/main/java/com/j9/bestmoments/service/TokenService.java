@@ -66,6 +66,9 @@ public class TokenService {
     @Transactional
     public String refresh(String refreshToken) {
         Token foundToken = this.findByToken(refreshToken);
+        if (!foundToken.getTokenType().equals(TokenType.REFRESH_TOKEN)) {
+            throw new AccessDeniedException("만료되거나 발급되지 않은 토큰입니다.");
+        }
         Member member = memberService.findById(foundToken.getMemberId());
         String newAccessToken = createAccessToken(member);
         return newAccessToken;
