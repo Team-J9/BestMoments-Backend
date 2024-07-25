@@ -7,4 +7,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface Token_Repository extends CrudRepository<Token_, String> {
 
+    boolean existsByToken(String token);
+
 }
