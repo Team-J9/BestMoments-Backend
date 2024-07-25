@@ -1,40 +1,23 @@
 package com.j9.bestmoments.domain;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import lombok.Builder;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.Id;
+import java.util.UUID;
+import lombok.Getter;
+import org.springframework.data.redis.core.RedisHash;
 
-@Entity
 @Getter
 @NoArgsConstructor
+@RedisHash("Token")
 public class Token {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
+    private String token;
+    private UUID memberId;
 
-    @ManyToOne
-    @JoinColumn(name = "member_id", referencedColumnName = "id")
-    private Member member;
-
-    private String refreshToken;
-    private String accessToken;
-
-    @Builder
-    public Token(Member member, String refreshToken, String accessToken) {
-        this.member = member;
-        this.refreshToken = refreshToken;
-        this.accessToken = accessToken;
-    }
-
-    public void setAccessToken(String accessToken) {
-        this.accessToken = accessToken;
+    public Token(Member member, String token) {
+        this.token = token;
+        this.memberId = member.getId();
     }
 
 }
