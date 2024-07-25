@@ -21,6 +21,7 @@ public class Token_Service {
 
     private final Token_Repository tokenRepository;
     private final JwtTokenProvider jwtTokenProvider;
+    private final MemberService memberService;
 
     @Transactional
     public LoginDto create(Member member) {
@@ -53,6 +54,14 @@ public class Token_Service {
     private Token_ findByToken(String token) {
         return tokenRepository.findById(token)
                 .orElseThrow(() -> new AccessDeniedException("만료되거나 발급되지 않은 토큰입니다."));
+    }
+
+    @Transactional
+    public String refresh(String refreshToken) {
+        Token_ foundToken = this.findByToken(refreshToken);
+        Member member = memberService.findById(foundToken.getMemberId());
+        String newAccessToken = createAccessToken(member);
+        return newAccessToken;
     }
 
 }
