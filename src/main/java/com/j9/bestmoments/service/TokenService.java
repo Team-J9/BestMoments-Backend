@@ -2,6 +2,7 @@ package com.j9.bestmoments.service;
 
 import com.j9.bestmoments.domain.Member;
 import com.j9.bestmoments.domain.Token;
+import com.j9.bestmoments.domain.TokenType;
 import com.j9.bestmoments.dto.response.LoginDto;
 import com.j9.bestmoments.jwt.JwtTokenProvider;
 import com.j9.bestmoments.repository.TokenRepository;
@@ -12,69 +13,65 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-@Slf4j
 @RequiredArgsConstructor
+@Slf4j
 public class TokenService {
 
     private final TokenRepository tokenRepository;
     private final JwtTokenProvider jwtTokenProvider;
+    private final MemberService memberService;
 
     @Transactional
     public LoginDto create(Member member) {
-        String accessToken = jwtTokenProvider.generateAccessToken(member);
-        String refreshToken = jwtTokenProvider.generateRefreshToken(member);
-        Token token = Token.builder()
+        String accessToken = createAccessToken(member);
+        String refreshToken = createRefreshToken(member);
+        log.info("토큰 발급됨\n  - accessToken: {}\n  - refreshToken: {}", accessToken, refreshToken);
+        this.findByToken(accessToken);
+        return new LoginDto(accessToken, refreshToken, member.getDeletedAt());
+    }
+
+    private String createAccessToken(Member member) {
+        String token = jwtTokenProvider.generateAccessToken(member);
+        Token accessToken = Token.builder()
                 .member(member)
-                .accessToken(accessToken)
-                .refreshToken(refreshToken)
+                .tokenType(TokenType.ACCESS_TOKEN)
+                .token(token)
                 .build();
-        tokenRepository.save(token);
-        log.error(token.getAccessToken());
-        log.error(token.getRefreshToken());
-        log.error(tokenRepository.findAll().get(0).getAccessToken());
-        return new LoginDto("Bearer", accessToken, refreshToken, member.getDeletedAt());
+        tokenRepository.save(accessToken);
+        return token;
     }
 
-    public Token findByAnyToken(String token) {
-        return tokenRepository.findByAccessToken(resolveToken(token))
-                .or(() -> tokenRepository.findByRefreshToken(resolveToken(token)))
-                .orElseThrow(() -> new AccessDeniedException("존재하지 않거나 만료된 토큰입니다."));
-    }
-
-    public Token findByAccessToken(String accessToken) {
-        return tokenRepository.findByAccessToken(resolveToken(accessToken))
-                .orElseThrow(() -> new AccessDeniedException("존재하지 않거나 만료된 액세스 토큰입니다."));
-    }
-
-    public Token findByRefreshToken(String refreshToken) {
-        return tokenRepository.findByRefreshToken(resolveToken(refreshToken))
-                .orElseThrow(() -> new AccessDeniedException("존재하지 않거나 만료된 리프래시 토큰입니다."));
-    }
-
-    public void checkExpired(String token) {
-        findByAnyToken(token);
+    private String createRefreshToken(Member member) {
+        String token = jwtTokenProvider.generateRefreshToken(member);
+        Token refreshToken = Token.builder()
+                .member(member)
+                .tokenType(TokenType.REFRESH_TOKEN)
+                .token(token)
+                .build();
+        tokenRepository.save(refreshToken);
+        return token;
     }
 
     @Transactional
     public void expire(String token) {
-        Token foundToken = findByAnyToken(token);
+        Token foundToken = this.findByToken(token);
         tokenRepository.delete(foundToken);
+    }
+
+    public Token findByToken(String token) {
+        return tokenRepository.findById(token)
+                .orElseThrow(() -> new AccessDeniedException("만료되거나 발급되지 않은 토큰입니다."));
     }
 
     @Transactional
     public String refresh(String refreshToken) {
-        Token foundToken = findByRefreshToken(refreshToken);
-        String accessToken = jwtTokenProvider.generateAccessToken(foundToken.getMember());
-        foundToken.setAccessToken(accessToken);
-        tokenRepository.save(foundToken);
-        return accessToken;
-    }
-
-    private String resolveToken(String token) {
-        if (token.startsWith("Bearer")) {
-            return token.substring(7);
+        Token foundToken = this.findByToken(refreshToken);
+        if (!foundToken.getTokenType().equals(TokenType.REFRESH_TOKEN)) {
+            throw new AccessDeniedException("만료되거나 발급되지 않은 토큰입니다.");
         }
-        return token;
+        Member member = memberService.findById(foundToken.getMemberId());
+        String newAccessToken = createAccessToken(member);
+        return newAccessToken;
     }
 
 }

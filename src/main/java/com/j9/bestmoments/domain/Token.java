@@ -1,40 +1,35 @@
 package com.j9.bestmoments.domain;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 import lombok.Builder;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.Id;
+import java.util.UUID;
+import lombok.Getter;
+import org.springframework.data.redis.core.RedisHash;
+import org.springframework.data.redis.core.TimeToLive;
 
-@Entity
 @Getter
 @NoArgsConstructor
-public class Token {
+@RedisHash(value = "Token")
+public
+class Token {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
+    private String token;
 
-    @ManyToOne
-    @JoinColumn(name = "member_id", referencedColumnName = "id")
-    private Member member;
+    private TokenType tokenType;
 
-    private String refreshToken;
-    private String accessToken;
+    @TimeToLive
+    private Long expiration;
+
+    private UUID memberId;
 
     @Builder
-    public Token(Member member, String refreshToken, String accessToken) {
-        this.member = member;
-        this.refreshToken = refreshToken;
-        this.accessToken = accessToken;
-    }
-
-    public void setAccessToken(String accessToken) {
-        this.accessToken = accessToken;
+    public Token(Member member, TokenType tokenType, String token) {
+        this.memberId = member.getId();
+        this.token = token;
+        this.tokenType = tokenType;
+        this.expiration = tokenType.getExpiration();
     }
 
 }
