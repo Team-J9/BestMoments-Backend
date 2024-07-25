@@ -6,7 +6,7 @@ import com.j9.bestmoments.domain.RefreshToken;
 import com.j9.bestmoments.domain.Token;
 import com.j9.bestmoments.dto.response.LoginDto;
 import com.j9.bestmoments.jwt.JwtTokenProvider;
-import com.j9.bestmoments.repository.Token_Repository;
+import com.j9.bestmoments.repository.TokenRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.AccessDeniedException;
@@ -18,7 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Slf4j
 public class TokenService {
 
-    private final Token_Repository tokenRepository;
+    private final TokenRepository tokenRepository;
     private final JwtTokenProvider jwtTokenProvider;
     private final MemberService memberService;
 
