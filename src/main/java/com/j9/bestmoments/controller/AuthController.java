@@ -3,6 +3,7 @@ package com.j9.bestmoments.controller;
 import com.j9.bestmoments.dto.response.LoginDto;
 import com.j9.bestmoments.dto.response.OAuthUserInfoDto;
 import com.j9.bestmoments.service.GoogleAuthService;
+import com.j9.bestmoments.service.KakaoAuthService;
 import com.j9.bestmoments.service.OAuthService;
 import com.j9.bestmoments.domain.Member;
 import com.j9.bestmoments.service.MemberService;
@@ -28,6 +29,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class AuthController {
 
     private final GoogleAuthService googleAuthService;
+    private final KakaoAuthService kakaoAuthService;
     private final MemberService memberService;
     private final TokenService tokenService;
 
@@ -36,6 +38,7 @@ public class AuthController {
     public ResponseEntity<LoginDto> login(@PathVariable String registrationId, @RequestParam String code) {
         OAuthService oAuthService = switch (registrationId) {
             case "google" -> googleAuthService;
+            case "kakao" -> kakaoAuthService;
             default -> throw new OAuth2AuthenticationException("존재하지 않는 OAuth 인증 방식입니다.");
         };
         OAuthUserInfoDto oAuthUserInfo = oAuthService.getUserInfo(code);
