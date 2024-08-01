@@ -31,7 +31,7 @@ public class AuthController {
     private final MemberService memberService;
     private final TokenService tokenService;
 
-    @GetMapping("/{registrationId}/callback")
+    @GetMapping("/{registrationId}/login")
     @Operation(summary = "OAuth 인증코드로 로그인/회원가입", description = "registrationId: google")
     public ResponseEntity<LoginDto> login(@PathVariable String registrationId, @RequestParam String code) {
         OAuthService oAuthService = switch (registrationId) {
