@@ -18,19 +18,19 @@ import org.springframework.web.client.RestTemplate;
 @Service
 public class GoogleAuthService implements OAuthService {
 
-    @Value("${spring.security.oauth2.client.registration.google.client-id}")
+    @Value("${oauth2.google.client-id}")
     private String clientId;
 
-    @Value("${spring.security.oauth2.client.registration.google.client-secret}")
+    @Value("${oauth2.google.client-secret}")
     private String clientSecret;
 
-    @Value("${spring.security.oauth2.client.registration.google.redirect-uri}")
+    @Value("${oauth2.google.redirect-uri}")
     private String redirectUri;
 
-    @Value("${spring.security.oauth2.client.registration.google.token-uri}")
+    @Value("${oauth2.google.token-uri}")
     private String tokenUri;
 
-    @Value("${spring.security.oauth2.client.registration.google.userinfo-uri}")
+    @Value("${oauth2.google.userinfo-uri}")
     private String userinfoUrl;
 
     @Override
