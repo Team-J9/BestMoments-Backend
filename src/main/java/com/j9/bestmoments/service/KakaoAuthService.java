@@ -16,43 +16,40 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
 @Service
-public class GoogleAuthService implements OAuthService {
+public class KakaoAuthService implements OAuthService {
 
-    @Value("${oauth2.google.client-id}")
+    @Value("${oauth2.kakao.client-id}")
     private String clientId;
 
-    @Value("${oauth2.google.client-secret}")
-    private String clientSecret;
-
-    @Value("${oauth2.google.redirect-uri}")
+    @Value("${oauth2.kakao.redirect-uri}")
     private String redirectUri;
 
-    @Value("${oauth2.google.token-uri}")
+    @Value("${oauth2.kakao.token-uri}")
     private String tokenUri;
 
-    @Value("${oauth2.google.userinfo-uri}")
+    @Value("${oauth2.kakao.userinfo-uri}")
     private String userinfoUrl;
 
     @Override
     public OAuthUserInfoDto getUserInfo(String code) {
         String accessToken = getAccessToken(code);
         Map attributes = getUserInfoAttributes(accessToken);
+        Map kakao_account = (Map) attributes.get("kakao_account");
+        Map profile = (Map) kakao_account.get("profile");
         return OAuthUserInfoDto.builder()
-                .provider("google")
+                .provider("kakao")
                 .id(attributes.get("id").toString())
-                .name(attributes.get("name").toString())
-                .email(attributes.get("email").toString())
-                .profileImageUrl(attributes.get("picture").toString())
+                .name(profile.get("nickname").toString())
+                .email(kakao_account.get("email").toString())
                 .build();
     }
 
     private String getAccessToken(String code) {
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
-        params.put("code", Collections.singletonList(code));
-        params.put("client_id", Collections.singletonList(clientId));
-        params.put("client_secret", Collections.singletonList(clientSecret));
-        params.put("redirect_uri", Collections.singletonList(redirectUri));
         params.put("grant_type", Collections.singletonList("authorization_code"));
+        params.put("client_id", Collections.singletonList(clientId));
+        params.put("redirect_uri", Collections.singletonList(redirectUri));
+        params.put("code", Collections.singletonList(code));
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
