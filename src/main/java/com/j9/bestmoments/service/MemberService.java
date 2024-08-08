@@ -5,6 +5,7 @@ import com.j9.bestmoments.dto.response.OAuthUserInfoDto;
 import com.j9.bestmoments.domain.MemberRole;
 import com.j9.bestmoments.domain.Member;
 import com.j9.bestmoments.repository.MemberRepository;
+import com.j9.bestmoments.util.FileNameGenerator;
 import jakarta.persistence.EntityNotFoundException;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
@@ -65,7 +66,8 @@ public class MemberService {
             member.setDescription(memberUpdateDto.description());
         }
         if (memberUpdateDto.file() != null) {
-            String profileImageUrl = googleCloudStorageService.uploadFile(memberUpdateDto.file());
+            String fileName = FileNameGenerator.generateProfileImageFileName(member);
+            String profileImageUrl = googleCloudStorageService.uploadFile(memberUpdateDto.file(), fileName);
             member.setProfileImageUrl(profileImageUrl);
         }
         return memberRepository.save(member);

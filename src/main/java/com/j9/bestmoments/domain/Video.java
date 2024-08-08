@@ -1,13 +1,10 @@
 package com.j9.bestmoments.domain;
 
-import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.Lob;
@@ -34,9 +31,6 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 public class Video {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    @GenericGenerator(name="uuid2", strategy = "uuid2")
-    @Column(columnDefinition = "BINARY(16)")
     private UUID id;
     private String fileUrl;
     private String title;
@@ -58,9 +52,9 @@ public class Video {
     private List<String> tags = new ArrayList<>();
 
     @Builder
-    public Video(Member uploader, String fileUrl, String title, String description, VideoStatus videoStatus) {
+    public Video(Member uploader, String title, String description, VideoStatus videoStatus) {
+        this.id = UUID.randomUUID();
         this.uploader = uploader;
-        this.fileUrl = fileUrl;
         this.title = title;
         this.description = description;
         this.videoStatus = videoStatus;
@@ -88,6 +82,10 @@ public class Video {
 
     public void setVideoTags(List<String> tags) {
         this.tags = tags;
+    }
+
+    public void setFileUrl(String fileUrl) {
+        this.fileUrl = fileUrl;
     }
 
 }

@@ -1,6 +1,8 @@
 package com.j9.bestmoments.service;
 
 import com.google.auth.oauth2.GoogleCredentials;
+import com.j9.bestmoments.domain.Member;
+import com.j9.bestmoments.util.FileNameGenerator;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.UUID;
@@ -35,17 +37,19 @@ public class GoogleCloudStorageService implements StorageService {
 
     // 다운로드 링크를 반환
     @Override
-    public String uploadFile(MultipartFile file) {
-        String fileName = String.format("%s.%s", UUID.randomUUID(), file.getContentType().split("/")[1]);
+    public String uploadFile(MultipartFile file, String fileName) {
+        String contentType = file.getContentType().split("/")[1];
         BlobId blobId = BlobId.of(bucketName, fileName);
         BlobInfo blobInfo = BlobInfo.newBuilder(blobId).build();
         try {
             storage.create(blobInfo, file.getInputStream());
         }
         catch (Exception e) {
+
             throw new RuntimeException("IOException");
         }
         log.info("blobId = {}", blobId);
-        return String.format("https://storage.cloud.google.com/%s/%s", bucketName, fileName);
+        return String.format("https://storage.cloud.google.com/%s/%s.%s", bucketName, fileName, contentType);
     }
+
 }
