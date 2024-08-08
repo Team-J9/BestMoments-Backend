@@ -7,6 +7,7 @@ import com.j9.bestmoments.domain.VideoStatus;
 import com.j9.bestmoments.dto.request.VideoCreateDto;
 import com.j9.bestmoments.dto.request.VideoUpdateDto;
 import com.j9.bestmoments.repository.VideoRepository;
+import com.j9.bestmoments.util.FileNameGenerator;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.security.auth.message.AuthException;
 import java.util.List;
@@ -28,14 +29,15 @@ public class VideoService {
 
     @Transactional
     public Video upload(Member member, VideoCreateDto createDto) {
-        String fileUrl = storageService.uploadFile(createDto.file(), createDto.title());
         Video video = Video.builder()
-                .fileUrl(fileUrl)
                 .uploader(member)
                 .videoStatus(createDto.videoStatus())
                 .title(createDto.title())
                 .description(createDto.description())
                 .build();
+        String fileName = FileNameGenerator.generateVideoFileName(video);
+        String fileUrl = storageService.uploadFile(createDto.file(), fileName);
+        video.setFileUrl(fileUrl);
         videoRepository.save(video);
         return video;
     }
