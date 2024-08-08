@@ -19,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class MemberService {
 
     private final MemberRepository memberRepository;
+    private final StorageService googleCloudStorageService;
 
     public Page<Member> findAll(Pageable pageable) {
         return memberRepository.findAll(PageRequest.of(
@@ -59,6 +60,8 @@ public class MemberService {
     public Member update(Member member, MemberUpdateDto memberUpdateDto) {
         member.setName(memberUpdateDto.name());
         member.setDescription(memberUpdateDto.description());
+        String profileImageUrl = googleCloudStorageService.uploadFile(memberUpdateDto.file());
+        member.setProfileImageUrl(profileImageUrl);
         return memberRepository.save(member);
     }
 
