@@ -28,7 +28,7 @@ public class VideoService {
 
     @Transactional
     public Video upload(Member member, VideoCreateDto createDto) {
-        String fileUrl = storageService.uploadFile(createDto.file());
+        String fileUrl = storageService.uploadFile(createDto.file(), createDto.title());
         Video video = Video.builder()
                 .fileUrl(fileUrl)
                 .uploader(member)
