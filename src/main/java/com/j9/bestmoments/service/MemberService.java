@@ -58,10 +58,16 @@ public class MemberService {
 
     @Transactional
     public Member update(Member member, MemberUpdateDto memberUpdateDto) {
-        member.setName(memberUpdateDto.name());
-        member.setDescription(memberUpdateDto.description());
-        String profileImageUrl = googleCloudStorageService.uploadFile(memberUpdateDto.file());
-        member.setProfileImageUrl(profileImageUrl);
+        if (memberUpdateDto.name() != null) {
+            member.setName(memberUpdateDto.name());
+        }
+        if (memberUpdateDto.description() != null) {
+            member.setDescription(memberUpdateDto.description());
+        }
+        if (memberUpdateDto.file() != null) {
+            String profileImageUrl = googleCloudStorageService.uploadFile(memberUpdateDto.file());
+            member.setProfileImageUrl(profileImageUrl);
+        }
         return memberRepository.save(member);
     }
 
