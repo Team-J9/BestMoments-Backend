@@ -19,7 +19,7 @@ public record VideoFindDto(
     public static VideoFindDto of (Video video) {
         return new VideoFindDto(
                 video.getId(),
-                video.getFileUrl(),
+                video.getVideoUrl(),
                 video.getTitle(),
                 video.getDescription(),
                 video.getUploader().getId(),
