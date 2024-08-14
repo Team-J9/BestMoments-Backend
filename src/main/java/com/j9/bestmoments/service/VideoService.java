@@ -36,7 +36,7 @@ public class VideoService {
                 .description(createDto.description())
                 .build();
         String fileName = FileNameGenerator.generateVideoFileName(video);
-        String fileUrl = storageService.uploadFile(createDto.file(), fileName);
+        String fileUrl = storageService.uploadFile(createDto.video(), fileName);
         video.setFileUrl(fileUrl);
         videoRepository.save(video);
         return video;

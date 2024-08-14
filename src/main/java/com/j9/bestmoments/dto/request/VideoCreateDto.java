@@ -10,7 +10,7 @@ import org.springframework.web.multipart.MultipartFile;
 public record VideoCreateDto(
 
         @VideoTypeCheck
-        MultipartFile file,
+        MultipartFile video,
 
         @NotNull
         @NotBlank
