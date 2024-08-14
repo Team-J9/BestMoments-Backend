@@ -33,6 +33,7 @@ public class Video {
     @Id
     private UUID id;
     private String videoUrl;
+    private String thumbnailUrl;
     private String title;
     @Lob
     private String description;
@@ -86,6 +87,10 @@ public class Video {
 
     public void setVideoUrl(String videoUrl) {
         this.videoUrl = videoUrl;
+    }
+
+    public void setThumbnailUrl(String thumbnailUrl) {
+        this.thumbnailUrl = thumbnailUrl;
     }
 
 }

@@ -7,7 +7,8 @@ import java.util.UUID;
 
 public record VideoFindDto(
         UUID id,
-        String fileUrl,
+        String videoUrl,
+        String thumbnailUrl,
         String title,
         String description,
         UUID uploaderId,
@@ -20,6 +21,7 @@ public record VideoFindDto(
         return new VideoFindDto(
                 video.getId(),
                 video.getVideoUrl(),
+                video.getThumbnailUrl(),
                 video.getTitle(),
                 video.getDescription(),
                 video.getUploader().getId(),

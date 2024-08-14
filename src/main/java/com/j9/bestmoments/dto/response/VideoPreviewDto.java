@@ -7,6 +7,7 @@ import java.util.UUID;
 
 public record VideoPreviewDto (
         UUID id,
+        String thumbnailUrl,
         String title,
         String description,
         UUID uploaderId,
@@ -17,6 +18,7 @@ public record VideoPreviewDto (
     public static VideoPreviewDto of (Video video) {
         return new VideoPreviewDto(
                 video.getId(),
+                video.getThumbnailUrl(),
                 video.getTitle(),
                 video.getDescription(),
                 video.getUploader().getId(),
