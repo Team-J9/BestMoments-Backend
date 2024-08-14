@@ -1,22 +1,20 @@
 package com.j9.bestmoments.service;
 
 import com.j9.bestmoments.domain.Member;
-import com.j9.bestmoments.domain.MemberRole;
 import com.j9.bestmoments.domain.Video;
 import com.j9.bestmoments.domain.VideoStatus;
 import com.j9.bestmoments.dto.request.VideoCreateDto;
 import com.j9.bestmoments.dto.request.VideoUpdateDto;
 import com.j9.bestmoments.repository.VideoRepository;
+import com.j9.bestmoments.service.storageService.LocalStorageService;
 import com.j9.bestmoments.util.FileNameGenerator;
 import jakarta.persistence.EntityNotFoundException;
-import jakarta.security.auth.message.AuthException;
 import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,7 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class VideoService {
 
     private final VideoRepository videoRepository;
-    private final StorageService storageService;
+    private final LocalStorageService storageService;
 
     @Transactional
     public Video upload(Member member, VideoCreateDto createDto) {
@@ -36,11 +34,11 @@ public class VideoService {
                 .description(createDto.description())
                 .build();
 
-        String videoName = FileNameGenerator.generateVideoFileName(video);
+        String videoName = FileNameGenerator.generateVideoFileName(video, createDto.video());
         String videoUrl = storageService.uploadFile(createDto.video(), videoName);
         video.setVideoUrl(videoUrl);
 
-        String thumbnailName = FileNameGenerator.generateThumbnailImageFileName(video);
+        String thumbnailName = FileNameGenerator.generateThumbnailImageFileName(video, createDto.thumbnail());
         String thumbnailUrl = storageService.uploadFile(createDto.thumbnail(), thumbnailName);
         video.setThumbnailUrl(thumbnailUrl);
 
@@ -80,7 +78,7 @@ public class VideoService {
     @Transactional
     public Video update(Video video, VideoUpdateDto updateDto) {
         if (updateDto.thumbnail() != null) {
-            String thumbnailName = FileNameGenerator.generateThumbnailImageFileName(video);
+            String thumbnailName = FileNameGenerator.generateThumbnailImageFileName(video, updateDto.thumbnail());
             String thumbnailUrl = storageService.uploadFile(updateDto.thumbnail(), thumbnailName);
             video.setThumbnailUrl(thumbnailUrl);
         }
