@@ -35,9 +35,15 @@ public class VideoService {
                 .title(createDto.title())
                 .description(createDto.description())
                 .build();
+
         String videoName = FileNameGenerator.generateVideoFileName(video);
         String videoUrl = storageService.uploadFile(createDto.video(), videoName);
         video.setVideoUrl(videoUrl);
+
+        String thumbnailName = FileNameGenerator.generateThumbnailImageFileName(video);
+        String thumbnailUrl = storageService.uploadFile(createDto.thumbnail(), thumbnailName);
+        video.setThumbnailUrl(thumbnailUrl);
+
         videoRepository.save(video);
         return video;
     }
