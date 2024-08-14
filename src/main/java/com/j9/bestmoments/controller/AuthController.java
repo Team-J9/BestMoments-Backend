@@ -2,9 +2,9 @@ package com.j9.bestmoments.controller;
 
 import com.j9.bestmoments.dto.response.LoginDto;
 import com.j9.bestmoments.dto.response.OAuthUserInfoDto;
-import com.j9.bestmoments.service.GoogleAuthService;
-import com.j9.bestmoments.service.KakaoAuthService;
-import com.j9.bestmoments.service.OAuthService;
+import com.j9.bestmoments.service.oauthService.GoogleAuthService;
+import com.j9.bestmoments.service.oauthService.KakaoAuthService;
+import com.j9.bestmoments.service.oauthService.OAuthService;
 import com.j9.bestmoments.domain.Member;
 import com.j9.bestmoments.service.MemberService;
 import com.j9.bestmoments.service.TokenService;
