@@ -18,6 +18,12 @@ public final class FileNameGenerator {
         return String.format("video/%s/video-origin", videoId);
     }
 
+    public static String generateThumbnailImageFileName(Video video) {
+        String videoId = video.getId().toString();
+        String dateString = generateDateString();
+        return String.format("video/%s/thumbnail-%s", videoId, dateString);
+    }
+
     private static String generateDateString() {
         LocalDateTime now = LocalDateTime.now();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");

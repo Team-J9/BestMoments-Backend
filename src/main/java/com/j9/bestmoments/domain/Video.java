@@ -32,7 +32,8 @@ public class Video {
 
     @Id
     private UUID id;
-    private String fileUrl;
+    private String videoUrl;
+    private String thumbnailUrl;
     private String title;
     @Lob
     private String description;
@@ -84,8 +85,12 @@ public class Video {
         this.tags = tags;
     }
 
-    public void setFileUrl(String fileUrl) {
-        this.fileUrl = fileUrl;
+    public void setVideoUrl(String videoUrl) {
+        this.videoUrl = videoUrl;
+    }
+
+    public void setThumbnailUrl(String thumbnailUrl) {
+        this.thumbnailUrl = thumbnailUrl;
     }
 
 }

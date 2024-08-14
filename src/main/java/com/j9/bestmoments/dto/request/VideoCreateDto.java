@@ -1,6 +1,7 @@
 package com.j9.bestmoments.dto.request;
 
 import com.j9.bestmoments.domain.VideoStatus;
+import com.j9.bestmoments.validator.ImageTypeCheck;
 import com.j9.bestmoments.validator.VideoTypeCheck;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -10,7 +11,10 @@ import org.springframework.web.multipart.MultipartFile;
 public record VideoCreateDto(
 
         @VideoTypeCheck
-        MultipartFile file,
+        MultipartFile video,
+
+        @ImageTypeCheck
+        MultipartFile thumbnail,
 
         @NotNull
         @NotBlank
