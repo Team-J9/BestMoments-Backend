@@ -25,7 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class VideoService {
 
     private final VideoRepository videoRepository;
-    private final StorageService storageService;
+    private final LocalStorageService storageService;
 
     @Transactional
     public Video upload(Member member, VideoCreateDto createDto) {
