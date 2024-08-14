@@ -1,5 +1,6 @@
 package com.j9.bestmoments.exception;
 
+import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.persistence.EntityNotFoundException;
 import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;

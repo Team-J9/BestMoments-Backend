@@ -4,11 +4,8 @@ import com.j9.bestmoments.constants.TokenExpiration;
 import com.j9.bestmoments.domain.Member;
 import com.sun.security.auth.UserPrincipal;
 import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.UnsupportedJwtException;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import java.security.Key;
@@ -68,26 +65,6 @@ public class JwtTokenProvider {
 
         SimpleGrantedAuthority authority = new SimpleGrantedAuthority(role);
         return new UsernamePasswordAuthenticationToken(new UserPrincipal(id), "", Collections.singletonList(authority));
-    }
-
-    // 토큰 정보 검증
-    public boolean validateToken(String token) {
-        try {
-            Jwts.parserBuilder()
-                    .setSigningKey(key)
-                    .build()
-                    .parseClaimsJws(token);
-            return true;
-        } catch (SecurityException | MalformedJwtException e) {
-            log.info("Invalid JWT Token", e);
-        } catch (ExpiredJwtException e) {
-            log.info("Expired JWT Token", e);
-        } catch (UnsupportedJwtException e) {
-            log.info("Unsupported JWT Token", e);
-        } catch (IllegalArgumentException e) {
-            log.info("JWT claims string is empty.", e);
-        }
-        return false;
     }
 
 }
