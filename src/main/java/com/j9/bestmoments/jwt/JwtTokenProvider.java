@@ -1,5 +1,6 @@
 package com.j9.bestmoments.jwt;
 
+import com.j9.bestmoments.constants.TokenExpiration;
 import com.j9.bestmoments.domain.Member;
 import com.sun.security.auth.UserPrincipal;
 import io.jsonwebtoken.Claims;
@@ -12,6 +13,7 @@ import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import java.security.Key;
 import java.util.Collections;
+import java.util.Date;
 import java.util.UUID;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -34,9 +36,13 @@ public class JwtTokenProvider {
     }
 
     public String generateAccessToken(Member member) {
+        Date now = new Date();
+        Date accessTokenExpiresIn = new Date(now.getTime() + TokenExpiration.ACCESS_TOKEN * 60 * 1000);
         return Jwts.builder()
                 .claim("id", member.getId())
                 .claim("role", member.getRole().getValue())
+                .setIssuedAt(now)
+                .setExpiration(accessTokenExpiresIn)
                 .signWith(key, SignatureAlgorithm.HS256)
                 .compact();
     }
