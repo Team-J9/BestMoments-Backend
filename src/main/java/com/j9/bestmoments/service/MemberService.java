@@ -5,6 +5,7 @@ import com.j9.bestmoments.dto.response.OAuthUserInfoDto;
 import com.j9.bestmoments.domain.MemberRole;
 import com.j9.bestmoments.domain.Member;
 import com.j9.bestmoments.repository.MemberRepository;
+import com.j9.bestmoments.service.storageService.StorageService;
 import com.j9.bestmoments.util.FileNameGenerator;
 import jakarta.persistence.EntityNotFoundException;
 import java.util.UUID;

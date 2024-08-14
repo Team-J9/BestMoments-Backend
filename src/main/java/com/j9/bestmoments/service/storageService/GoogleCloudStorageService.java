@@ -1,11 +1,8 @@
-package com.j9.bestmoments.service;
+package com.j9.bestmoments.service.storageService;
 
 import com.google.auth.oauth2.GoogleCredentials;
-import com.j9.bestmoments.domain.Member;
-import com.j9.bestmoments.util.FileNameGenerator;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.UUID;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;

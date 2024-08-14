@@ -1,22 +1,20 @@
 package com.j9.bestmoments.service;
 
 import com.j9.bestmoments.domain.Member;
-import com.j9.bestmoments.domain.MemberRole;
 import com.j9.bestmoments.domain.Video;
 import com.j9.bestmoments.domain.VideoStatus;
 import com.j9.bestmoments.dto.request.VideoCreateDto;
 import com.j9.bestmoments.dto.request.VideoUpdateDto;
 import com.j9.bestmoments.repository.VideoRepository;
+import com.j9.bestmoments.service.storageService.LocalStorageService;
 import com.j9.bestmoments.util.FileNameGenerator;
 import jakarta.persistence.EntityNotFoundException;
-import jakarta.security.auth.message.AuthException;
 import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

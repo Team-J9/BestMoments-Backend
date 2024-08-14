@@ -1,4 +1,4 @@
-package com.j9.bestmoments.service;
+package com.j9.bestmoments.service.storageService;
 
 import java.io.File;
 import java.io.IOException;
