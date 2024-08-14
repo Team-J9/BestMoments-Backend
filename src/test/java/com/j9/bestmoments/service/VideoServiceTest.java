@@ -132,7 +132,7 @@ public class VideoServiceTest {
         String changedTitle = "changedTitle";
         String changedDescription = "changedDescription";
         VideoStatus changedVideoStatus = VideoStatus.PRIVATE;
-        VideoUpdateDto dto = new VideoUpdateDto(changedTitle, changedDescription, changedVideoStatus);
+        VideoUpdateDto dto = new VideoUpdateDto(null, changedTitle, changedDescription, changedVideoStatus);
 
         videoService.update(publicVideo, dto);
 

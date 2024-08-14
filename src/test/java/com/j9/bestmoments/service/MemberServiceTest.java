@@ -116,7 +116,7 @@ public class MemberServiceTest {
     void update() {
         String changedName = "changedName";
         String changedDescription = "changedDescription";
-        MemberUpdateDto dto = new MemberUpdateDto(changedName, changedDescription);
+        MemberUpdateDto dto = new MemberUpdateDto(null, changedName, changedDescription);
 
         memberService.update(member1, dto);
 
