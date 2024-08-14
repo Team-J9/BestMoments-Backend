@@ -67,8 +67,8 @@ public class MyVideoController {
     }
 
     @Operation(summary = "내 동영상 정보 수정")
-    @PatchMapping("/{videoId}")
-    public ResponseEntity<VideoFindDto> update(@PathVariable UUID videoId, @RequestBody @Valid VideoUpdateDto updateDto) {
+    @PatchMapping(path = "/{videoId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<VideoFindDto> update(@PathVariable UUID videoId, @ModelAttribute @Valid VideoUpdateDto updateDto) {
         UUID memberId = UUID.fromString(SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString());
         Video video = videoService.findByIdAndUploaderId(videoId, memberId);
         videoService.update(video, updateDto);

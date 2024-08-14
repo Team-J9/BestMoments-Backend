@@ -79,6 +79,11 @@ public class VideoService {
 
     @Transactional
     public Video update(Video video, VideoUpdateDto updateDto) {
+        if (updateDto.thumbnail() != null) {
+            String thumbnailName = FileNameGenerator.generateThumbnailImageFileName(video);
+            String thumbnailUrl = storageService.uploadFile(updateDto.thumbnail(), thumbnailName);
+            video.setThumbnailUrl(thumbnailUrl);
+        }
         video.setTitle(updateDto.title());
         video.setDescription(updateDto.description());
         video.setVideoStatus(updateDto.videoStatus());
