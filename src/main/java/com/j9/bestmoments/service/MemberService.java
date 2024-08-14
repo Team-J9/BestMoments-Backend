@@ -66,7 +66,7 @@ public class MemberService {
             member.setDescription(memberUpdateDto.description());
         }
         if (memberUpdateDto.file() != null) {
-            String fileName = FileNameGenerator.generateProfileImageFileName(member);
+            String fileName = FileNameGenerator.generateProfileImageFileName(member, memberUpdateDto.file());
             String profileImageUrl = googleCloudStorageService.uploadFile(memberUpdateDto.file(), fileName);
             member.setProfileImageUrl(profileImageUrl);
         }

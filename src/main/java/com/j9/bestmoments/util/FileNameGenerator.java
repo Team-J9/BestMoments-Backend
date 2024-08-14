@@ -4,30 +4,41 @@ import com.j9.bestmoments.domain.Member;
 import com.j9.bestmoments.domain.Video;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import org.springframework.web.multipart.MultipartFile;
 
 public final class FileNameGenerator {
 
-    public static String generateProfileImageFileName(Member member) {
+    public static String generateProfileImageFileName(Member member, MultipartFile file) {
         String memberId = member.getId().toString();
         String dateString = generateDateString();
-        return String.format("profile/%s/%s", memberId, dateString);
+        String contentType = getContentType(file);
+        return String.format("profile/%s/%s.%s", memberId, dateString, contentType);
     }
 
-    public static String generateVideoFileName(Video video) {
+    public static String generateVideoFileName(Video video, MultipartFile file) {
         String videoId = video.getId().toString();
-        return String.format("video/%s/video-origin", videoId);
+        String contentType = getContentType(file);
+        return String.format("video/%s/video-origin.%s", videoId, contentType);
     }
 
-    public static String generateThumbnailImageFileName(Video video) {
+    public static String generateThumbnailImageFileName(Video video, MultipartFile file) {
         String videoId = video.getId().toString();
         String dateString = generateDateString();
-        return String.format("video/%s/thumbnail-%s", videoId, dateString);
+        String contentType = getContentType(file);
+        return String.format("video/%s/thumbnail-%s.%s", videoId, dateString, contentType);
     }
 
     private static String generateDateString() {
         LocalDateTime now = LocalDateTime.now();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
         return now.format(formatter);
+    }
+
+    private static String getContentType(MultipartFile file) {
+        if (file.isEmpty()) {
+            throw new RuntimeException("파일이 존재하지 않음");
+        }
+        return file.getContentType().split("/")[1];
     }
 
 }

@@ -36,11 +36,11 @@ public class VideoService {
                 .description(createDto.description())
                 .build();
 
-        String videoName = FileNameGenerator.generateVideoFileName(video);
+        String videoName = FileNameGenerator.generateVideoFileName(video, createDto.video());
         String videoUrl = storageService.uploadFile(createDto.video(), videoName);
         video.setVideoUrl(videoUrl);
 
-        String thumbnailName = FileNameGenerator.generateThumbnailImageFileName(video);
+        String thumbnailName = FileNameGenerator.generateThumbnailImageFileName(video, createDto.thumbnail());
         String thumbnailUrl = storageService.uploadFile(createDto.thumbnail(), thumbnailName);
         video.setThumbnailUrl(thumbnailUrl);
 
@@ -80,7 +80,7 @@ public class VideoService {
     @Transactional
     public Video update(Video video, VideoUpdateDto updateDto) {
         if (updateDto.thumbnail() != null) {
-            String thumbnailName = FileNameGenerator.generateThumbnailImageFileName(video);
+            String thumbnailName = FileNameGenerator.generateThumbnailImageFileName(video, updateDto.thumbnail());
             String thumbnailUrl = storageService.uploadFile(updateDto.thumbnail(), thumbnailName);
             video.setThumbnailUrl(thumbnailUrl);
         }
