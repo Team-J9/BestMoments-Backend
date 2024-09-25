@@ -8,6 +8,7 @@ import com.j9.bestmoments.repository.MemberRepository;
 import com.j9.bestmoments.service.storageService.StorageService;
 import com.j9.bestmoments.util.FileNameGenerator;
 import jakarta.persistence.EntityNotFoundException;
+import java.util.Optional;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -29,8 +30,8 @@ public class MemberService {
         ));
     }
 
-    public Member findByIdAndDeletedAtIsNull(UUID id) {
-        return memberRepository.findByIdAndDeletedAtIsNull(id)
+    public Member findByIdAndIsDeletedFalse(UUID id) {
+        return memberRepository.findByIdAndIsDeletedFalse(id)
                 .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 유저입니다."));
     }
 
@@ -42,7 +43,7 @@ public class MemberService {
     @Transactional
     public Member findOrSaveByOAuthInfo(OAuthUserInfoDto oAuth2UserInfo) {
         return memberRepository.findByOauthProviderAndOauthId(oAuth2UserInfo.provider(), oAuth2UserInfo.id())
-                    .orElseGet(() -> memberRepository.save(this.create(oAuth2UserInfo)));
+                .orElseGet(() -> memberRepository.save(this.create(oAuth2UserInfo)));
     }
 
     private Member create(OAuthUserInfoDto oAuthUserInfoDto) {

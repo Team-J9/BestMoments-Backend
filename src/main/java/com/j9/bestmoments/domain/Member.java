@@ -50,7 +50,7 @@ public class Member implements UserDetails {
 
     @CreatedDate
     private LocalDateTime createdAt;
-    private LocalDateTime deletedAt;
+    private boolean isDeleted;
 
     @BatchSize(size = 100)
     @OneToMany(mappedBy = "uploader")
@@ -65,14 +65,15 @@ public class Member implements UserDetails {
         this.profileImageUrl = profileImageUrl;
         this.oauthProvider = oauthProvider;
         this.oauthId = oauthId;
+        this.isDeleted = false;
     }
 
     public void softDelete() {
-        this.deletedAt = LocalDateTime.now();
+        this.isDeleted = true;
     }
 
     public void restore() {
-        this.deletedAt = null;
+        this.isDeleted = false;
     }
 
     public void setName(String name) {
@@ -121,4 +122,5 @@ public class Member implements UserDetails {
     public boolean isEnabled() {
         return true;
     }
+
 }
