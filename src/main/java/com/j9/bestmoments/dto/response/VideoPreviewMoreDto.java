@@ -11,7 +11,7 @@ public record VideoPreviewMoreDto(
         String title,
         UUID uploaderId,
         LocalDateTime createdAt,
-        LocalDateTime deletedAt,
+        boolean isDeleted,
         VideoStatus videoStatus
 ) {
 
@@ -22,7 +22,7 @@ public record VideoPreviewMoreDto(
                 video.getTitle(),
                 video.getUploader().getId(),
                 video.getCreatedAt(),
-                video.getDeletedAt(),
+                video.isDeleted(),
                 video.getVideoStatus()
         );
     }

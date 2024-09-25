@@ -66,12 +66,12 @@ public class VideoService {
     }
 
     public Video findDeletedByIdAndUploaderId(UUID id, UUID memberId) {
-        return videoRepository.findByIdAndUploaderIdAndDeletedAtIsNotNull(id, memberId)
+        return videoRepository.findByIdAndUploaderIdAndIsDeletedTrue(id, memberId)
                 .orElseThrow(EntityNotFoundException::new);
     }
 
     public Video findPublicById(UUID id) {
-        return videoRepository.findByIdAndVideoStatusAndDeletedAtIsNull(id, VideoStatus.PUBLIC)
+        return videoRepository.findByIdAndVideoStatusAndIsDeletedFalse(id, VideoStatus.PUBLIC)
                 .orElseThrow(EntityNotFoundException::new);
     }
 
@@ -110,21 +110,21 @@ public class VideoService {
     }
 
     public Page<Video> findAllActivatedByUploaderId(UUID memberId, Pageable pageable) {
-        return videoRepository.findAllByUploaderIdAndDeletedAtIsNull(
+        return videoRepository.findAllByUploaderIdAndIsDeletedFalse(
                 memberId,
                 PageRequest.of(pageable.getPageNumber(), pageable.getPageSize())
         );
     }
 
     public Page<Video> findAllDeletedByUploaderId(UUID memberId, Pageable pageable) {
-        return videoRepository.findAllByUploaderIdAndDeletedAtIsNotNull(
+        return videoRepository.findAllByUploaderIdAndIsDeletedTrue(
                 memberId,
                 PageRequest.of(pageable.getPageNumber(), pageable.getPageSize())
         );
     }
 
     public Page<Video> findAllPublicByUploaderId(UUID memberId, Pageable pageable) {
-        return videoRepository.findAllByUploaderIdAndVideoStatusAndDeletedAtIsNull(
+        return videoRepository.findAllByUploaderIdAndVideoStatusAndIsDeletedFalse(
                 memberId,
                 VideoStatus.PUBLIC,
                 PageRequest.of(pageable.getPageNumber(), pageable.getPageSize())
@@ -132,7 +132,7 @@ public class VideoService {
     }
 
     public Page<Video> findAllPublicByTag(String tag, Pageable pageable) {
-        return videoRepository.findAllByTagsContainsAndVideoStatusAndDeletedAtIsNull(
+        return videoRepository.findAllByTagsContainsAndVideoStatusAndIsDeletedFalse(
                 tag,
                 VideoStatus.PUBLIC,
                 PageRequest.of(pageable.getPageNumber(), pageable.getPageSize())
@@ -140,7 +140,7 @@ public class VideoService {
     }
 
     public Page<Video> findAllByUploaderAndTag(UUID memberId, String tag, Pageable pageable) {
-        return videoRepository.findAllByUploaderIdAndTagsContainsAndDeletedAtIsNull(
+        return videoRepository.findAllByUploaderIdAndTagsContainsAndIsDeletedFalse(
                 memberId,
                 tag,
                 PageRequest.of(pageable.getPageNumber(), pageable.getPageSize())

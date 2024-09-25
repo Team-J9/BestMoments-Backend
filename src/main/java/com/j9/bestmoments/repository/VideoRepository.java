@@ -12,20 +12,20 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface VideoRepository extends JpaRepository<Video, UUID> {
 
-    Page<Video> findAllByUploaderIdAndDeletedAtIsNotNull(UUID uploaderId, PageRequest pageRequest);
+    Page<Video> findAllByUploaderIdAndIsDeletedTrue(UUID uploaderId, PageRequest pageRequest);
 
-    Page<Video> findAllByUploaderIdAndDeletedAtIsNull(UUID uploaderId, PageRequest pageRequest);
+    Page<Video> findAllByUploaderIdAndIsDeletedFalse(UUID uploaderId, PageRequest pageRequest);
 
-    Page<Video> findAllByUploaderIdAndVideoStatusAndDeletedAtIsNull(UUID uploaderId, VideoStatus videoStatus, PageRequest pageRequest);
+    Page<Video> findAllByUploaderIdAndVideoStatusAndIsDeletedFalse(UUID uploaderId, VideoStatus videoStatus, PageRequest pageRequest);
 
-    Optional<Video> findByIdAndUploaderIdAndDeletedAtIsNotNull(UUID id, UUID uploaderId);
+    Optional<Video> findByIdAndUploaderIdAndIsDeletedTrue(UUID id, UUID uploaderId);
 
-    Optional<Video> findByIdAndVideoStatusAndDeletedAtIsNull(UUID id, VideoStatus videoStatus);
+    Optional<Video> findByIdAndVideoStatusAndIsDeletedFalse(UUID id, VideoStatus videoStatus);
 
     Optional<Video> findByIdAndUploaderId(UUID id, UUID uploaderId);
 
-    Page<Video> findAllByTagsContainsAndVideoStatusAndDeletedAtIsNull(String tag, VideoStatus videoStatus, PageRequest pageRequest);
+    Page<Video> findAllByTagsContainsAndVideoStatusAndIsDeletedFalse(String tag, VideoStatus videoStatus, PageRequest pageRequest);
 
-    Page<Video> findAllByUploaderIdAndTagsContainsAndDeletedAtIsNull(UUID uploaderId, String tag, PageRequest pageRequest);
+    Page<Video> findAllByUploaderIdAndTagsContainsAndIsDeletedFalse(UUID uploaderId, String tag, PageRequest pageRequest);
 
 }
