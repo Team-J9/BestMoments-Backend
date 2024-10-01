@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import java.io.IOException;
 
@@ -14,6 +15,7 @@ public class FfmpegService {
     @Value("${ffmpeg.path}")
     private String ffmpegPath;
 
+    @Async
     public void encodeVideo(String inputFilePath, String outputFilePath, String resolution) {
         try {
             ProcessBuilder processBuilder = new ProcessBuilder(

@@ -9,8 +9,10 @@ import com.j9.bestmoments.repository.VideoRepository;
 import com.j9.bestmoments.service.storageService.LocalStorageService;
 import com.j9.bestmoments.util.FileNameGenerator;
 import jakarta.persistence.EntityNotFoundException;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -24,6 +26,7 @@ public class VideoService {
 
     private final VideoRepository videoRepository;
     private final LocalStorageService storageService;
+    private final FfmpegService ffmpegService;
 
     @Transactional
     public Video upload(Member member, VideoCreateDto createDto) {
@@ -34,16 +37,44 @@ public class VideoService {
                 .description(createDto.description())
                 .build();
 
-        String videoName = FileNameGenerator.generateVideoFileName(video, createDto.video());
-        String videoUrl = storageService.uploadFile(createDto.video(), videoName);
-        video.setVideoUrl(videoUrl);
+        // 원본 영상
+        String originVideoName = FileNameGenerator.generateVideoFileName(video, createDto.video());
+        String originVideoUrl = storageService.uploadFile(createDto.video(), originVideoName);
+        video.setVideoUrl(originVideoUrl);
 
+        // 썸네일 이미지
         String thumbnailName = FileNameGenerator.generateThumbnailImageFileName(video, createDto.thumbnail());
         String thumbnailUrl = storageService.uploadFile(createDto.thumbnail(), thumbnailName);
         video.setThumbnailUrl(thumbnailUrl);
 
+        // 원본 사이즈 인코딩
+        String resolution = ffmpegService.getVideoResolution(originVideoUrl);
+        String encodedVideoUrl = uploadEncodedVideo(originVideoUrl, resolution);
+
+        // 1/2 사이즈 인코딩
+        String halfResolution = Arrays.stream(resolution.split("x"))
+                .mapToInt(Integer::parseInt)
+                .map(value -> value / 2)
+                .mapToObj(String::valueOf)
+                .collect(Collectors.joining("x"));
+        String halfEncodedVideoUrl = uploadEncodedVideo(originVideoUrl, halfResolution);
+
+        // 1/4 사이즈 인코딩
+        String quarterResolution = Arrays.stream(resolution.split("x"))
+                .mapToInt(Integer::parseInt)
+                .map(value -> value / 4)
+                .mapToObj(String::valueOf)
+                .collect(Collectors.joining("x"));
+        String quarterEncodedVideoUrl = uploadEncodedVideo(originVideoUrl, quarterResolution);
+
         videoRepository.save(video);
         return video;
+    }
+
+    private String uploadEncodedVideo(String videoUrl, String resolution) {
+        String encodedVideoUrl = FileNameGenerator.generateEncodedVideoFileName(videoUrl, resolution);
+        ffmpegService.encodeVideo(videoUrl, encodedVideoUrl, resolution);
+        return encodedVideoUrl;
     }
 
     public Page<Video> findAll(Pageable pageable) {
