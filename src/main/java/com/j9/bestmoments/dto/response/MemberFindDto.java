@@ -10,7 +10,7 @@ public record MemberFindDto(
         String profileImageUrl,
         String description,
         LocalDateTime createdAt,
-        LocalDateTime deletedAt
+        boolean isDeleted
 ) {
 
     public static MemberFindDto of(Member member) {
@@ -21,7 +21,7 @@ public record MemberFindDto(
                 member.getProfileImageUrl(),
                 member.getDescription(),
                 member.getCreatedAt(),
-                member.getDeletedAt()
+                member.isDeleted()
         );
     }
 

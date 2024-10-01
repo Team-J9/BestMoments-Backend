@@ -47,7 +47,7 @@ public class Video {
 
     @CreatedDate
     private LocalDateTime createdAt;
-    private LocalDateTime deletedAt;
+    private boolean isDeleted;
 
     @ElementCollection
     private List<String> tags = new ArrayList<>();
@@ -59,14 +59,15 @@ public class Video {
         this.title = title;
         this.description = description;
         this.videoStatus = videoStatus;
+        this.isDeleted = false;
     }
 
     public void softDelete() {
-        this.deletedAt = LocalDateTime.now();
+        this.isDeleted = true;
     }
 
     public void restore() {
-        this.deletedAt = null;
+        this.isDeleted = false;
     }
 
     public void setTitle(String title) {

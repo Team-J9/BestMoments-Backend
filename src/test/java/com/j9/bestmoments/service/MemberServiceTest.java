@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.transaction.annotation.Transactional;
 
 @SpringBootTest
 public class MemberServiceTest {
@@ -30,6 +31,7 @@ public class MemberServiceTest {
     private final Member member3 = MemberGenerator.createGoogleMember("user3", MemberRole.USER);
 
     @BeforeEach
+    @Transactional
     void createMembers() {
         memberRepository.save(member1);
         memberRepository.save(member2);
@@ -37,6 +39,7 @@ public class MemberServiceTest {
     }
 
     @Test
+    @Transactional
     void findAll() {
         List<Member> foundMembers = memberService
                 .findAll(PageRequest.of(0, 100))
@@ -47,6 +50,7 @@ public class MemberServiceTest {
     }
 
     @Test
+    @Transactional
     void findById_Success() {
         UUID id = member1.getId();
         Member foundMember = memberService.findById(id);
@@ -54,27 +58,31 @@ public class MemberServiceTest {
     }
 
     @Test
+    @Transactional
     void findById_Fail() {
         UUID id = UUID.randomUUID();
         Assertions.assertThrows(EntityNotFoundException.class, () -> memberService.findById(id));
     }
 
     @Test
-    void findByIdAndDeletedAtIsNull_Success() {
+    @Transactional
+    void findByIdAndIsDeletedFalse_Success() {
         UUID id = member1.getId();
-        Member foundMember = memberService.findByIdAndDeletedAtIsNull(id);
+        Member foundMember = memberService.findByIdAndIsDeletedFalse(id);
         Assertions.assertEquals(member1, foundMember);
     }
 
     @Test
-    void findByIdAndDeletedAtIsNull_Fail() {
+    @Transactional
+    void findByIdAndIsDeletedFalse_Fail() {
         member1.softDelete();
         memberRepository.save(member1);
         UUID id = member1.getId();
-        Assertions.assertThrows(EntityNotFoundException.class, () -> memberService.findByIdAndDeletedAtIsNull(id));
+        Assertions.assertThrows(EntityNotFoundException.class, () -> memberService.findByIdAndIsDeletedFalse(id));
     }
 
     @Test
+    @Transactional
     void findOrSaveByOAuthInfo_Find() {
         OAuthUserInfoDto dto = new OAuthUserInfoDto(
                 member1.getOauthProvider(),
@@ -94,9 +102,10 @@ public class MemberServiceTest {
     }
 
     @Test
+    @Transactional
     void findOrSaveByOAuthInfo_Save() {
         OAuthUserInfoDto dto = new OAuthUserInfoDto(
-                member1.getOauthProvider(),
+                "google",
                 UUID.randomUUID().toString(),
                 null,
                 null,
@@ -113,6 +122,7 @@ public class MemberServiceTest {
     }
 
     @Test
+    @Transactional
     void update() {
         String changedName = "changedName";
         String changedDescription = "changedDescription";
@@ -126,18 +136,20 @@ public class MemberServiceTest {
     }
 
     @Test
+    @Transactional
     void softDelete() {
         memberService.softDelete(member1);
         UUID id = member1.getId();
-        Assertions.assertThrows(EntityNotFoundException.class, () -> memberService.findByIdAndDeletedAtIsNull(id));
+        Assertions.assertThrows(EntityNotFoundException.class, () -> memberService.findByIdAndIsDeletedFalse(id));
     }
 
     @Test
+    @Transactional
     void restore() {
         memberService.softDelete(member1);
         memberService.restore(member1);
         UUID id = member1.getId();
-        Assertions.assertDoesNotThrow(() -> memberService.findByIdAndDeletedAtIsNull(id));
+        Assertions.assertDoesNotThrow(() -> memberService.findByIdAndIsDeletedFalse(id));
     }
 
 }

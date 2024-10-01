@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface MemberRepository extends JpaRepository<Member, UUID> {
 
-    Optional<Member> findByIdAndDeletedAtIsNull(UUID id);
+    Optional<Member> findByIdAndIsDeletedFalse(UUID id);
 
     Optional<Member> findByOauthProviderAndOauthId(String oauthProvider, String oauthId);
 

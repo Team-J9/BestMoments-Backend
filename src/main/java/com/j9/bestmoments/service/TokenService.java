@@ -27,7 +27,7 @@ public class TokenService {
         String refreshToken = createRefreshToken(member);
         log.info("토큰 발급됨\n  - accessToken: {}\n  - refreshToken: {}", accessToken, refreshToken);
         this.findByToken(accessToken);
-        return new LoginDto(accessToken, refreshToken, member.getDeletedAt());
+        return new LoginDto(accessToken, refreshToken, member.isDeleted());
     }
 
     private String createAccessToken(Member member) {

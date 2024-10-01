@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -41,7 +40,7 @@ public class MemberController {
     @GetMapping("/{memberId}")
     @Operation(summary = "사용자 상세 정보 조회", description = "사용자 id로 상세 정보 조회, 탈퇴한 사용자는 표기되지 않음")
     public ResponseEntity<MemberFindDto> getMemberInfo(@PathVariable UUID memberId) {
-        Member member = memberService.findByIdAndDeletedAtIsNull(memberId);
+        Member member = memberService.findByIdAndIsDeletedFalse(memberId);
         return ResponseEntity.ok(MemberFindDto.of(member));
     }
 
