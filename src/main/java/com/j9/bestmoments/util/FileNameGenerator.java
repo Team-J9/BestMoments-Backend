@@ -21,6 +21,12 @@ public final class FileNameGenerator {
         return String.format("video/%s/video-origin.%s", videoId, contentType);
     }
 
+    public static String generateEncodedVideoFileName(String videoFileName, String resolution) {
+        String[] splitFileName = videoFileName.split("-origin.");
+        String originVideoFileName = splitFileName[0];
+        return String.format("%s-%s.mp4", originVideoFileName, resolution);
+    }
+
     public static String generateThumbnailImageFileName(Video video, MultipartFile file) {
         String videoId = video.getId().toString();
         String dateString = generateDateString();
