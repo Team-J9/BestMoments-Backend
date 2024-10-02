@@ -7,7 +7,6 @@ import com.j9.bestmoments.dto.request.VideoCreateDto;
 import com.j9.bestmoments.dto.request.VideoUpdateDto;
 import com.j9.bestmoments.repository.VideoRepository;
 import com.j9.bestmoments.service.storageService.LocalStorageService;
-import com.j9.bestmoments.util.FileNameGenerator;
 import jakarta.persistence.EntityNotFoundException;
 import java.util.Arrays;
 import java.util.List;
@@ -38,12 +37,12 @@ public class VideoService {
                 .build();
 
         // 원본 영상
-        String originVideoName = FileNameGenerator.generateVideoFileName(video, createDto.video());
+        String originVideoName = FileNameProvider.generateVideoFileName(video, createDto.video());
         String originVideoUrl = storageService.uploadFile(createDto.video(), originVideoName);
         video.setVideoUrl(originVideoUrl);
 
         // 썸네일 이미지
-        String thumbnailName = FileNameGenerator.generateThumbnailImageFileName(video, createDto.thumbnail());
+        String thumbnailName = FileNameProvider.generateThumbnailImageFileName(video, createDto.thumbnail());
         String thumbnailUrl = storageService.uploadFile(createDto.thumbnail(), thumbnailName);
         video.setThumbnailUrl(thumbnailUrl);
 
@@ -72,7 +71,7 @@ public class VideoService {
     }
 
     private String uploadEncodedVideo(String videoUrl, String resolution) {
-        String encodedVideoUrl = FileNameGenerator.generateEncodedVideoFileName(videoUrl, resolution);
+        String encodedVideoUrl = FileNameProvider.generateEncodedVideoFileName(videoUrl, resolution);
         ffmpegService.encodeVideo(videoUrl, encodedVideoUrl, resolution);
         return encodedVideoUrl;
     }
@@ -109,7 +108,7 @@ public class VideoService {
     @Transactional
     public Video update(Video video, VideoUpdateDto updateDto) {
         if (updateDto.thumbnail() != null) {
-            String thumbnailName = FileNameGenerator.generateThumbnailImageFileName(video, updateDto.thumbnail());
+            String thumbnailName = FileNameProvider.generateThumbnailImageFileName(video, updateDto.thumbnail());
             String thumbnailUrl = storageService.uploadFile(updateDto.thumbnail(), thumbnailName);
             video.setThumbnailUrl(thumbnailUrl);
         }

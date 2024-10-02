@@ -1,4 +1,4 @@
-package com.j9.bestmoments.util;
+package com.j9.bestmoments.service;
 
 import com.j9.bestmoments.domain.Member;
 import com.j9.bestmoments.domain.Video;
@@ -6,7 +6,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import org.springframework.web.multipart.MultipartFile;
 
-public final class FileNameGenerator {
+public final class FileNameProvider {
 
     public static String generateProfileImageFileName(Member member, MultipartFile file) {
         String memberId = member.getId().toString();
