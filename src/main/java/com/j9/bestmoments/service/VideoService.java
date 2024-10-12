@@ -61,7 +61,7 @@ public class VideoService {
             if (height >= originalHeight) {
                 break;
             }
-            int width = originalWidth * originalHeight / height;
+            int width = originalWidth * height / originalHeight;
             String resolution = width + "x" + height;
             String encodedVideoUrl = uploadEncodedVideo(originVideoUrl, resolution);
             video.addEncodedVideoUrl(encodedVideoUrl);
