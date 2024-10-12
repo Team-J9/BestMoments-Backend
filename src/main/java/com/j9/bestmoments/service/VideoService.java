@@ -8,6 +8,7 @@ import com.j9.bestmoments.dto.request.VideoUpdateDto;
 import com.j9.bestmoments.repository.VideoRepository;
 import com.j9.bestmoments.service.storageService.LocalStorageService;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.persistence.criteria.CriteriaBuilder.In;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
@@ -26,6 +27,8 @@ public class VideoService {
     private final VideoRepository videoRepository;
     private final LocalStorageService storageService;
     private final FfmpegService ffmpegService;
+
+    private final static int[] STANDARD_RESOLUTION_HEIGHTS = {144, 240, 360, 480, 720, 1080, 1440, 2160};
 
     @Transactional
     public Video upload(Member member, VideoCreateDto createDto) {
@@ -47,27 +50,25 @@ public class VideoService {
         video.setThumbnailUrl(thumbnailUrl);
 
         // 원본 사이즈 인코딩
-        String resolution = ffmpegService.getVideoResolution(originVideoUrl);
-        String encodedVideoUrl = uploadEncodedVideo(originVideoUrl, resolution);
-        video.addEncodedVideoUrl(encodedVideoUrl);
+        String originalResolution = ffmpegService.getVideoResolution(originVideoUrl);
+        String originalSizeEncodedVideoUrl = uploadEncodedVideo(originVideoUrl, originalResolution);
 
-        // 1/2 사이즈 인코딩
-        String halfResolution = Arrays.stream(resolution.split("x"))
-                .mapToInt(Integer::parseInt)
-                .map(value -> value / 2)
-                .mapToObj(String::valueOf)
-                .collect(Collectors.joining("x"));
-        String halfEncodedVideoUrl = uploadEncodedVideo(originVideoUrl, halfResolution);
-        video.addEncodedVideoUrl(halfEncodedVideoUrl);
+        int originalWidth = Integer.parseInt(originalResolution.split("x")[0]);
+        int originalHeight = Integer.parseInt(originalResolution.split("x")[1]);
 
-        // 1/4 사이즈 인코딩
-        String quarterResolution = Arrays.stream(resolution.split("x"))
-                .mapToInt(Integer::parseInt)
-                .map(value -> value / 4)
-                .mapToObj(String::valueOf)
-                .collect(Collectors.joining("x"));
-        String quarterEncodedVideoUrl = uploadEncodedVideo(originVideoUrl, quarterResolution);
-        video.addEncodedVideoUrl(quarterEncodedVideoUrl);
+        for (int height : STANDARD_RESOLUTION_HEIGHTS) {
+            // 원본 화질보다 작은 화질로만 인코딩
+            if (height >= originalHeight) {
+                break;
+            }
+            int width = originalWidth * originalHeight / height;
+            String resolution = width + "x" + height;
+            String encodedVideoUrl = uploadEncodedVideo(originVideoUrl, resolution);
+            video.addEncodedVideoUrl(encodedVideoUrl);
+        }
+
+        // 가장 큰 원본 화질은 가장 마지막에 추가
+        video.addEncodedVideoUrl(originalSizeEncodedVideoUrl);
 
         videoRepository.save(video);
         return video;
