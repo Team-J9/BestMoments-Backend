@@ -1,5 +1,6 @@
 package com.j9.bestmoments.service;
 
+import jakarta.persistence.criteria.CriteriaBuilder.In;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import lombok.extern.slf4j.Slf4j;
@@ -18,6 +19,17 @@ public class FfmpegService {
     @Async
     public void encodeVideo(String inputFilePath, String outputFilePath, String resolution) {
         try {
+            // 해상도가 홀수인 경우 조정
+            int width = Integer.parseInt(resolution.split("x")[0]);
+            int height = Integer.parseInt(resolution.split("x")[0]);
+            if (width % 2 == 1) {
+                width++;
+            }
+            if (height % 2 == 1) {
+                height++;
+            }
+            resolution = width + "x" + height;
+
             ProcessBuilder processBuilder = new ProcessBuilder(
                     ffmpegPath, "-i", inputFilePath, "-s", resolution, "-codec:v", "libx264", outputFilePath
             );
