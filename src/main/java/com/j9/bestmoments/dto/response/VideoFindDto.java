@@ -3,11 +3,12 @@ package com.j9.bestmoments.dto.response;
 import com.j9.bestmoments.domain.Video;
 import com.j9.bestmoments.domain.VideoStatus;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 
 public record VideoFindDto(
         UUID id,
-        String videoUrl,
+        List<String> videoUrls,
         String thumbnailUrl,
         String title,
         String description,
@@ -20,7 +21,7 @@ public record VideoFindDto(
     public static VideoFindDto of (Video video) {
         return new VideoFindDto(
                 video.getId(),
-                video.getVideoUrl(),
+                video.getEncodedVideoUrls(),
                 video.getThumbnailUrl(),
                 video.getTitle(),
                 video.getDescription(),
