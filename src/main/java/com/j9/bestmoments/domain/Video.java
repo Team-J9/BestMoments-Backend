@@ -19,7 +19,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
-import org.hibernate.annotations.GenericGenerator;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
@@ -32,8 +31,12 @@ public class Video {
 
     @Id
     private UUID id;
+
     private String videoUrl;
     private String thumbnailUrl;
+    @Lob
+    private List<String> encodedVideoUrls;
+
     private String title;
     @Lob
     private String description;
@@ -60,6 +63,7 @@ public class Video {
         this.description = description;
         this.videoStatus = videoStatus;
         this.isDeleted = false;
+        this.encodedVideoUrls = new ArrayList<>();
     }
 
     public void softDelete() {
@@ -88,6 +92,10 @@ public class Video {
 
     public void setVideoUrl(String videoUrl) {
         this.videoUrl = videoUrl;
+    }
+
+    public void addEncodedVideoUrl(String videoUrl) {
+        this.encodedVideoUrls.add(videoUrl);
     }
 
     public void setThumbnailUrl(String thumbnailUrl) {

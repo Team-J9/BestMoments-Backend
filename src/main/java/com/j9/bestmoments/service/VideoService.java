@@ -49,6 +49,7 @@ public class VideoService {
         // 원본 사이즈 인코딩
         String resolution = ffmpegService.getVideoResolution(originVideoUrl);
         String encodedVideoUrl = uploadEncodedVideo(originVideoUrl, resolution);
+        video.addEncodedVideoUrl(encodedVideoUrl);
 
         // 1/2 사이즈 인코딩
         String halfResolution = Arrays.stream(resolution.split("x"))
@@ -57,6 +58,7 @@ public class VideoService {
                 .mapToObj(String::valueOf)
                 .collect(Collectors.joining("x"));
         String halfEncodedVideoUrl = uploadEncodedVideo(originVideoUrl, halfResolution);
+        video.addEncodedVideoUrl(halfEncodedVideoUrl);
 
         // 1/4 사이즈 인코딩
         String quarterResolution = Arrays.stream(resolution.split("x"))
@@ -65,6 +67,7 @@ public class VideoService {
                 .mapToObj(String::valueOf)
                 .collect(Collectors.joining("x"));
         String quarterEncodedVideoUrl = uploadEncodedVideo(originVideoUrl, quarterResolution);
+        video.addEncodedVideoUrl(quarterEncodedVideoUrl);
 
         videoRepository.save(video);
         return video;
