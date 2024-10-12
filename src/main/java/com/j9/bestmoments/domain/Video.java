@@ -1,5 +1,7 @@
 package com.j9.bestmoments.domain;
 
+import com.j9.bestmoments.converter.StringListConverter;
+import jakarta.persistence.Convert;
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
@@ -35,6 +37,7 @@ public class Video {
     private String videoUrl;
     private String thumbnailUrl;
     @Lob
+    @Convert(converter = StringListConverter.class)
     private List<String> encodedVideoUrls;
 
     private String title;
