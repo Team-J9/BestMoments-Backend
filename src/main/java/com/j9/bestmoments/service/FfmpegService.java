@@ -69,7 +69,7 @@ public class FfmpegService {
             // FFmpeg의 출력에서 해상도를 파싱하여 추출
             while ((line = reader.readLine()) != null) {
                 if (line.contains("Video:")) {
-                    String[] parts = line.split(",");
+                    String[] parts = line.split(" ");
                     for (String part : parts) {
                         if (part.trim().matches("\\d{2,}x\\d{2,}")) {
                             resolution = part.trim(); // 해상도 부분을 찾음
