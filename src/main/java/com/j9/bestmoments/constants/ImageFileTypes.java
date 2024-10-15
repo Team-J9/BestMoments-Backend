@@ -19,7 +19,6 @@ public enum ImageFileTypes {
     private final String contentType;
 
     public static boolean contains(String contentType) {
-        System.out.println(contentType);
         if (contentType == null) {
             return false;
         }

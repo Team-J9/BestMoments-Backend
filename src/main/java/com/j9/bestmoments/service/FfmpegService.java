@@ -38,10 +38,10 @@ public class FfmpegService {
 
             // 로그 스트림 처리
             try (BufferedReader reader = new BufferedReader(new InputStreamReader(process.getErrorStream()))) {
-                String line;
-                while ((line = reader.readLine()) != null) {
-                    System.out.println(line);  // 로그를 출력하거나 저장할 수 있습니다.
-                }
+//                String line;
+//                while ((line = reader.readLine()) != null) {
+//                    log.info(line);
+//                }
             }
 
             int exitCode = process.waitFor();
