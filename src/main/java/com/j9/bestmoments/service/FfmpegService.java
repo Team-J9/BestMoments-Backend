@@ -38,10 +38,10 @@ public class FfmpegService {
 
             // 로그 스트림 처리
             try (BufferedReader reader = new BufferedReader(new InputStreamReader(process.getErrorStream()))) {
-                String line;
-                while ((line = reader.readLine()) != null) {
-                    System.out.println(line);  // 로그를 출력하거나 저장할 수 있습니다.
-                }
+//                String line;
+//                while ((line = reader.readLine()) != null) {
+//                    log.info(line);  // 로그를 출력하거나 저장할 수 있습니다.
+//                }
             }
 
             int exitCode = process.waitFor();
@@ -68,9 +68,11 @@ public class FfmpegService {
 
             // FFmpeg의 출력에서 해상도를 파싱하여 추출
             while ((line = reader.readLine()) != null) {
-                if (line.contains("Video:")) {
-                    String[] parts = line.split(",");
-                    for (String part : parts) {
+                if (!line.contains("Video:")) {
+                    continue;
+                }
+                for (String parts : line.split(",")) {
+                    for (String part : parts.split(" ")) {
                         if (part.trim().matches("\\d{2,}x\\d{2,}")) {
                             resolution = part.trim(); // 해상도 부분을 찾음
                             break;
